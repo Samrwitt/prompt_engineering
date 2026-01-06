@@ -4,18 +4,16 @@ import json
 import re
 import random
 from pathlib import Path
-from typing import List, Dict, Tuple
-
-import numpy as np
+from typing import List, Dict, Tuple, Any, Optional
 
 from src.model import HFLLM
 
-
+# Matches integers or decimals, including negative
 _NUM_RE = re.compile(r"-?\d+(?:\.\d+)?")
 
 
-def load_dataset_jsonl(path: str) -> List[Dict[str, str]]:
-    items = []
+def load_dataset_jsonl(path: str) -> List[Dict[str, Any]]:
+    items: List[Dict[str, Any]] = []
     with open(path, "r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
@@ -24,12 +22,15 @@ def load_dataset_jsonl(path: str) -> List[Dict[str, str]]:
     return items
 
 
-def split_train_test(data: List[Dict[str, str]], train_ratio: float = 0.8, seed: int = 42) -> Tuple[List[Dict[str, str]], List[Dict[str, str]]]:
+def split_train_test(
+    data: List[Dict[str, Any]],
+    train_ratio: float = 0.8,
+    seed: int = 42,
+) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
     rng = random.Random(seed)
-    # Shuffle a copy
     shuffled = list(data)
     rng.shuffle(shuffled)
-    
+
     n = len(shuffled)
     n_train = int(n * train_ratio)
     return shuffled[:n_train], shuffled[n_train:]
@@ -41,31 +42,109 @@ def load_blocks(path: str) -> List[str]:
 
 def build_prompt(blocks: List[str], x: List[int]) -> str:
     chosen = [b for b, bit in zip(blocks, x) if int(bit) == 1]
-    # You can tune this format later, but keep it fixed for fairness
     return "\n".join(chosen).strip()
 
 
-def extract_number(text):
-    t = text.lower()
-    if "yes" in t: return "yes"
-    if "no" in t: return "no"
-    # New logic: map 1->yes, 0->no if explicit yes/no not found?
-    # Or just treat them as synonyms.
-    if "1" in t: return "yes"
-    if "0" in t: return "no"
-    if "a" in t: return "a"
-    if "b" in t: return "b"
-    return ""
+def extract_answer(text: str, answer_type: str) -> str:
+    """
+    answer_type: "number" | "yesno" | "abcd" | "text"
+    Returns a normalized answer for scoring.
+    """
+    t = (text or "").strip().lower()
 
+    if answer_type == "yesno":
+        # Explicit yes/no
+        if re.search(r"\byes\b", t):
+            return "yes"
+        if re.search(r"\bno\b", t):
+            return "no"
+        # Common variants
+        if re.search(r"\btrue\b", t):
+            return "yes"
+        if re.search(r"\bfalse\b", t):
+            return "no"
+        # Numeric surrogates if model outputs 1/0
+        if re.search(r"\b1\b", t):
+            return "yes"
+        if re.search(r"\b0\b", t):
+            return "no"
+        return ""
 
+    if answer_type == "abcd":
+        # Standalone A/B/C/D token only
+        m = re.search(r"\b([abcd])\b", t)
+        return m.group(1) if m else ""
+
+    if answer_type == "number":
+        # Prefer number after "answer" if present
+        m = re.search(r"answer[^0-9-]*(-?\d+(?:\.\d+)?)", t)
+        if m:
+            return m.group(1)
+
+        nums = _NUM_RE.findall(t.replace(",", ""))
+        return nums[-1] if nums else ""
+
+    # fallback (not recommended for strict scoring)
+    return t
 
 
 class PromptEvaluator:
-    def __init__(self, llm: HFLLM, dataset: List[Dict[str, str]], blocks: List[str]) -> None:
+    def __init__(
+        self,
+        llm: HFLLM,
+        dataset: List[Dict[str, Any]],
+        blocks: List[str],
+        answer_type: str = "number",  # "yesno" | "abcd" | "number"
+    ) -> None:
         self.llm = llm
         self.dataset = dataset
         self.blocks = blocks
+        self.answer_type = answer_type
+
+        # Cache: (prompt_vector, question_text) -> model_output
         self.cache: Dict[Tuple[Tuple[int, ...], str], str] = {}
+
+    def _format_input(self, prompt_prefix: str, q: str) -> str:
+        """
+        Create a model input string. Keep this consistent for fair experiments.
+        For causal LMs, trailing space after ":" helps completion; harmless for seq2seq.
+        """
+        if self.answer_type == "yesno":
+            return (
+                f"{prompt_prefix}\n\n"
+                f"Question: {q}\n"
+                f"Answer (yes or no): "
+            )
+
+        if self.answer_type == "abcd":
+            return (
+                f"{prompt_prefix}\n\n"
+                f"Question: {q}\n"
+                f"Answer (A/B/C/D): "
+            )
+
+        # default: number
+        return (
+            f"{prompt_prefix}\n\n"
+            f"Question: {q}\n"
+            f"Answer (integer only): "
+        )
+
+    def _normalize_ground_truth(self, a_raw: Any) -> str:
+        a = str(a_raw).strip().lower()
+
+        if self.answer_type == "yesno":
+            if a in ("1", "yes", "true"):
+                return "yes"
+            if a in ("0", "no", "false"):
+                return "no"
+            return a
+
+        if self.answer_type == "abcd":
+            return a[:1]  # 'a'/'b'/'c'/'d'
+
+        # number
+        return a
 
     def eval_accuracy(self, x: List[int]) -> float:
         prompt_prefix = build_prompt(self.blocks, x)
@@ -73,31 +152,20 @@ class PromptEvaluator:
         total = len(self.dataset)
 
         for item in self.dataset:
-            q = item["q"]
-            # Ensure ground truth is normalized if it's 1/0/yes/no
-            a_raw = str(item["a"]).strip().lower()
-            if a_raw == "1": a = "yes"
-            elif a_raw == "0": a = "no"
-            else: a = a_raw
+            q = str(item["q"])
+            gt = self._normalize_ground_truth(item["a"])
 
-
-            key = (tuple(x), q)
+            key = (tuple(int(b) for b in x), q)
             if key in self.cache:
                 out = self.cache[key]
             else:
-                # FLAN-T5 pattern: Instruction + Input
-                # We put the discovered blocks as the Instruction
-                inp = (
-    f"{prompt_prefix}\n"
-    f"Question: {q}\n"
-    f"Answer (yes or no):"
-)
-
+                inp = self._format_input(prompt_prefix, q)
                 out = self.llm.generate(inp)
                 self.cache[key] = out
 
-            pred = extract_number(out)
-            if pred.strip() == a.strip():
+            pred = extract_answer(out, self.answer_type)
+
+            if pred == gt:
                 correct += 1
 
         return correct / total if total else 0.0
