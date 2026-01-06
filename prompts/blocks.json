@@ -1,10 +1,8 @@
 [
   "Solve the following math problem.",
-  "Answer correctly.",
-  "Let's think step by step.",
-  "Generate the result only.",
-  "Compute the answer.",
-  "Return the number.",
-  "Calculate the sum.",
-  "Be concise."
+  "Be precise.",
+  "Answer directly with the number.",
+  "Your answer should be a single integer.",
+  "Do not include any explanation.",
+  "Check your work."
 ]

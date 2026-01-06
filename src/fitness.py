@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+import random
 from pathlib import Path
 from typing import List, Dict, Tuple
 
@@ -10,7 +11,7 @@ import numpy as np
 from src.model import HFLLM
 
 
-_NUM_RE = re.compile(r"-?\d+(\.\d+)?")
+_NUM_RE = re.compile(r"-?\d+(?:\.\d+)?")
 
 
 def load_dataset_jsonl(path: str) -> List[Dict[str, str]]:
@@ -23,6 +24,17 @@ def load_dataset_jsonl(path: str) -> List[Dict[str, str]]:
     return items
 
 
+def split_train_test(data: List[Dict[str, str]], train_ratio: float = 0.8, seed: int = 42) -> Tuple[List[Dict[str, str]], List[Dict[str, str]]]:
+    rng = random.Random(seed)
+    # Shuffle a copy
+    shuffled = list(data)
+    rng.shuffle(shuffled)
+    
+    n = len(shuffled)
+    n_train = int(n * train_ratio)
+    return shuffled[:n_train], shuffled[n_train:]
+
+
 def load_blocks(path: str) -> List[str]:
     return json.loads(Path(path).read_text(encoding="utf-8"))
 
@@ -33,15 +45,18 @@ def build_prompt(blocks: List[str], x: List[int]) -> str:
     return "\n".join(chosen).strip()
 
 
+def extract_number(text):
+    t = text.lower()
+    if "yes" in t: return "yes"
+    if "no" in t: return "no"
+    # New logic: map 1->yes, 0->no if explicit yes/no not found?
+    # Or just treat them as synonyms.
+    if "1" in t: return "yes"
+    if "0" in t: return "no"
+    if "a" in t: return "a"
+    if "b" in t: return "b"
+    return ""
 
-def extract_number(text: str) -> str:
-    # Look for the last number in the string
-    t = text.strip()
-    nums = _NUM_RE.findall(t)
-    if not nums:
-        return ""
-    # Return the last match (often the final answer)
-    return nums[-1][0] if isinstance(nums[-1], tuple) else nums[-1]
 
 
 
@@ -59,7 +74,11 @@ class PromptEvaluator:
 
         for item in self.dataset:
             q = item["q"]
-            a = str(item["a"]).strip()
+            # Ensure ground truth is normalized if it's 1/0/yes/no
+            a_raw = str(item["a"]).strip().lower()
+            if a_raw == "1": a = "yes"
+            elif a_raw == "0": a = "no"
+            else: a = a_raw
 
 
             key = (tuple(x), q)
@@ -68,7 +87,12 @@ class PromptEvaluator:
             else:
                 # FLAN-T5 pattern: Instruction + Input
                 # We put the discovered blocks as the Instruction
-                inp = f"{prompt_prefix}\n\nQuestion: {q}\nAnswer:"
+                inp = (
+    f"{prompt_prefix}\n"
+    f"Question: {q}\n"
+    f"Answer (yes or no):"
+)
+
                 out = self.llm.generate(inp)
                 self.cache[key] = out
 

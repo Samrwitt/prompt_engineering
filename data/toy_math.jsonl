@@ -1,10 +1,60 @@
-{"q":"What is 7 + 5?","a":"12"}
-{"q":"What is 9 - 4?","a":"5"}
-{"q":"If you have 3 apples and get 6 more, how many apples do you have?","a":"9"}
-{"q":"What is 8 * 3?","a":"24"}
-{"q":"What is 36 / 6?","a":"6"}
-{"q":"What is 15 + 20?","a":"35"}
-{"q":"What is 100 - 58?","a":"42"}
-{"q":"What is 14 * 2?","a":"28"}
-{"q":"What is 81 / 9?","a":"9"}
-{"q":"What is (5 + 3) * 2?","a":"16"}
+{"q": "Is 81 greater than 14?", "a": "yes"}
+{"q": "Is 35 greater than 31?", "a": "yes"}
+{"q": "Is 94 less than 13?", "a": "no"}
+{"q": "Is 69 less than 11?", "a": "no"}
+{"q": "Is 4 greater than 3?", "a": "yes"}
+{"q": "Is 29 less than 64?", "a": "yes"}
+{"q": "Is 71 less than 25?", "a": "no"}
+{"q": "Is 89 greater than 69?", "a": "yes"}
+{"q": "Is 57 greater than 75?", "a": "no"}
+{"q": "Is 0 less than 97?", "a": "yes"}
+{"q": "Is 89 greater than 54?", "a": "yes"}
+{"q": "Is 19 less than 27?", "a": "yes"}
+{"q": "Is 43 greater than 13?", "a": "yes"}
+{"q": "Is 12 less than 45?", "a": "yes"}
+{"q": "Is 77 less than 33?", "a": "no"}
+{"q": "Is 93 less than 58?", "a": "no"}
+{"q": "Is 48 less than 10?", "a": "no"}
+{"q": "Is 80 less than 79?", "a": "no"}
+{"q": "Is 46 greater than 73?", "a": "no"}
+{"q": "Is 8 less than 5?", "a": "no"}
+{"q": "Is 98 less than 37?", "a": "no"}
+{"q": "Is 29 greater than 12?", "a": "yes"}
+{"q": "Is 58 less than 81?", "a": "yes"}
+{"q": "Is 20 greater than 47?", "a": "no"}
+{"q": "Is 85 less than 34?", "a": "no"}
+{"q": "Is 87 greater than 82?", "a": "yes"}
+{"q": "Is 81 less than 21?", "a": "no"}
+{"q": "Is 31 greater than 20?", "a": "yes"}
+{"q": "Is 34 less than 81?", "a": "yes"}
+{"q": "Is 28 greater than 87?", "a": "no"}
+{"q": "Is 98 greater than 99?", "a": "no"}
+{"q": "Is 4 greater than 40?", "a": "no"}
+{"q": "Is 8 less than 27?", "a": "yes"}
+{"q": "Is 72 greater than 91?", "a": "no"}
+{"q": "Is 83 greater than 63?", "a": "yes"}
+{"q": "Is 82 greater than 58?", "a": "yes"}
+{"q": "Is 17 less than 31?", "a": "yes"}
+{"q": "Is 68 less than 33?", "a": "no"}
+{"q": "Is 54 greater than 74?", "a": "no"}
+{"q": "Is 28 less than 17?", "a": "no"}
+{"q": "Is 11 greater than 96?", "a": "no"}
+{"q": "Is 14 less than 19?", "a": "yes"}
+{"q": "Is 87 less than 54?", "a": "no"}
+{"q": "Is 49 less than 48?", "a": "no"}
+{"q": "Is 59 greater than 67?", "a": "no"}
+{"q": "Is 70 less than 1?", "a": "no"}
+{"q": "Is 14 less than 87?", "a": "yes"}
+{"q": "Is 96 less than 34?", "a": "no"}
+{"q": "Is 43 greater than 14?", "a": "yes"}
+{"q": "Is 20 greater than 58?", "a": "no"}
+{"q": "Is 92 less than 33?", "a": "no"}
+{"q": "Is 97 less than 22?", "a": "no"}
+{"q": "Is 13 greater than 80?", "a": "no"}
+{"q": "Is 81 less than 64?", "a": "no"}
+{"q": "Is 19 less than 47?", "a": "yes"}
+{"q": "Is 69 less than 99?", "a": "yes"}
+{"q": "Is 0 greater than 76?", "a": "no"}
+{"q": "Is 2 less than 14?", "a": "yes"}
+{"q": "Is 39 greater than 30?", "a": "yes"}
+{"q": "Is 72 greater than 10?", "a": "yes"}

@@ -1,0 +1,60 @@
+{"q": "Is not True true?", "a": "no"}
+{"q": "Is True AND False true?", "a": "no"}
+{"q": "Is False OR False true?", "a": "no"}
+{"q": "Is True OR True true?", "a": "yes"}
+{"q": "Is True OR True true?", "a": "yes"}
+{"q": "Is False OR True true?", "a": "yes"}
+{"q": "Is not False true?", "a": "yes"}
+{"q": "Is True OR True true?", "a": "yes"}
+{"q": "Is not True true?", "a": "no"}
+{"q": "Is not False true?", "a": "yes"}
+{"q": "Is True OR True true?", "a": "yes"}
+{"q": "Is False AND True true?", "a": "no"}
+{"q": "Is not True true?", "a": "no"}
+{"q": "Is not False true?", "a": "yes"}
+{"q": "Is True AND False true?", "a": "no"}
+{"q": "Is True OR True true?", "a": "yes"}
+{"q": "Is True AND True true?", "a": "yes"}
+{"q": "Is False OR False true?", "a": "no"}
+{"q": "Is False OR False true?", "a": "no"}
+{"q": "Is False AND True true?", "a": "no"}
+{"q": "Is not False true?", "a": "yes"}
+{"q": "Is False OR False true?", "a": "no"}
+{"q": "Is not True true?", "a": "no"}
+{"q": "Is False AND True true?", "a": "no"}
+{"q": "Is True OR False true?", "a": "yes"}
+{"q": "Is True OR False true?", "a": "yes"}
+{"q": "Is False OR False true?", "a": "no"}
+{"q": "Is True OR False true?", "a": "yes"}
+{"q": "Is True OR False true?", "a": "yes"}
+{"q": "Is not True true?", "a": "no"}
+{"q": "Is False OR False true?", "a": "no"}
+{"q": "Is True AND False true?", "a": "no"}
+{"q": "Is False AND False true?", "a": "no"}
+{"q": "Is True AND False true?", "a": "no"}
+{"q": "Is not True true?", "a": "no"}
+{"q": "Is False OR True true?", "a": "yes"}
+{"q": "Is True OR False true?", "a": "yes"}
+{"q": "Is True AND True true?", "a": "yes"}
+{"q": "Is not True true?", "a": "no"}
+{"q": "Is not True true?", "a": "no"}
+{"q": "Is False OR False true?", "a": "no"}
+{"q": "Is False AND False true?", "a": "no"}
+{"q": "Is False OR False true?", "a": "no"}
+{"q": "Is not False true?", "a": "yes"}
+{"q": "Is not True true?", "a": "no"}
+{"q": "Is not False true?", "a": "yes"}
+{"q": "Is not False true?", "a": "yes"}
+{"q": "Is False OR False true?", "a": "no"}
+{"q": "Is True OR False true?", "a": "yes"}
+{"q": "Is not True true?", "a": "no"}
+{"q": "Is False OR False true?", "a": "no"}
+{"q": "Is not False true?", "a": "yes"}
+{"q": "Is False AND False true?", "a": "no"}
+{"q": "Is False OR True true?", "a": "yes"}
+{"q": "Is not True true?", "a": "no"}
+{"q": "Is not False true?", "a": "yes"}
+{"q": "Is not False true?", "a": "yes"}
+{"q": "Is not False true?", "a": "yes"}
+{"q": "Is False AND False true?", "a": "no"}
+{"q": "Is True AND False true?", "a": "no"}

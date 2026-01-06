@@ -4,3 +4,4 @@ accelerate
 numpy
 tqdm
 scipy
+dspy-ai

@@ -8,7 +8,7 @@ from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 @dataclass
 class LLMConfig:
-    model_name: str = "google/flan-t5-small"
+    model_name: str = "google/flan-t5-base"
     device: str = "cpu"
     max_new_tokens: int = 32
 
