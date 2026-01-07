@@ -10,6 +10,7 @@ from src.baseline import run_baseline, run_random_baseline, run_greedy_baseline
 from src.sa import simulated_annealing
 from src.ga import genetic_algorithm
 from src.pso import binary_pso
+from src.model import HFLLM, LLMConfig
 
 
 def save_json(path: str, obj: Dict[str, Any]) -> None:
@@ -19,13 +20,16 @@ def save_json(path: str, obj: Dict[str, Any]) -> None:
 
 def main() -> None:
     datasets_to_run = [
-        ("toy_math", "data/toy_math.jsonl"),
         ("arithmetic", "data/arithmetic.jsonl"),
         ("logic", "data/logic.jsonl"),
+        # NEW: third section (comparative reasoning)
+        ("comparative", "data/comparative_reasoning.jsonl"),
     ]
 
-    blocks = load_blocks("prompts/blocks.json")
-    llm = HFLLM()  # set model_name in src/model.py if changing models
+
+    llm_yesno = HFLLM(LLMConfig(model_name="google/flan-t5-small", device="cpu", max_new_tokens=16))
+    llm_math  = HFLLM(LLMConfig(model_name="Qwen/Qwen2.5-Math-1.5B-Instruct", device="cpu", max_new_tokens=32))
+  # set model_name in src/model.py if changing models
 
     final_results: Dict[str, Any] = {}
 
@@ -34,21 +38,34 @@ def main() -> None:
         print(f"Running on Dataset: {ds_name}")
         print(f"==========================================")
 
-        full_data = load_dataset_jsonl(ds_path)
+        # 1) Pick answer_type + blocks_path based on dataset
+        if ds_name in ("toy_math", "arithmetic"):
+            answer_type = "number"
+            blocks_path = "prompts/blocks_number.json"
+        elif ds_name in ("logic", "comparative"):
+            answer_type = "yesno"
+            blocks_path = "prompts/blocks_yesno.json"
+        else:
+            answer_type = "number"
+            blocks_path = "prompts/blocks_number.json"
 
+        # 2) Load blocks PER dataset type
+        blocks = load_blocks(blocks_path)
+        print(f"Using blocks: {blocks_path} (n={len(blocks)}) | answer_type={answer_type}")
+
+        # 3) Load and split dataset
+        full_data = load_dataset_jsonl(ds_path)
         train_data, test_data = split_train_test(full_data, train_ratio=0.8, seed=42)
         print(f"Data split: {len(train_data)} train, {len(test_data)} test")
 
-        # Pick answer_type based on dataset
         if ds_name in ("toy_math", "arithmetic"):
-            answer_type = "number"
-        elif ds_name == "logic":
-            answer_type = "yesno"  # change to "abcd" if needed
+            llm = llm_math
         else:
-            answer_type = "number"
+            llm = llm_yesno
 
         train_evaluator = PromptEvaluator(llm, train_data, blocks, answer_type=answer_type)
         test_evaluator = PromptEvaluator(llm, test_data, blocks, answer_type=answer_type)
+
 
         ds_results: Dict[str, Any] = {}
 
@@ -56,27 +73,33 @@ def main() -> None:
         print("Running Deterministic Baseline...")
         base_x, base_train_acc = run_baseline(train_evaluator)
         base_test_acc = test_evaluator.eval_accuracy(base_x)
-        ds_results["baseline"] = {"train": base_train_acc, "test": base_test_acc, "x": base_x}
+        ds_results["baseline"] = {
+            "train": base_train_acc,
+            "test": base_test_acc,
+            "x": base_x,
+            "blocks_path": blocks_path,
+            "answer_type": answer_type,
+        }
         print(f"  Train: {base_train_acc:.2f}, Test: {base_test_acc:.2f}")
 
         print("Running Random Baseline...")
-        rand_x, rand_train_acc = run_random_baseline(train_evaluator, num_samples=5, seed=0)
+        rand_x, rand_train_acc = run_random_baseline(train_evaluator, num_samples=10, seed=0)
         rand_test_acc = test_evaluator.eval_accuracy(rand_x)
         ds_results["random"] = {"train": rand_train_acc, "test": rand_test_acc, "x": rand_x}
         print(f"  Train: {rand_train_acc:.2f}, Test: {rand_test_acc:.2f}")
 
         print("Running Greedy Baseline...")
-        greedy_x, greedy_train_acc = run_greedy_baseline(train_evaluator, steps=5, seed=0)
+        greedy_x, greedy_train_acc = run_greedy_baseline(train_evaluator, steps=min(10, len(blocks)), seed=0)
         greedy_test_acc = test_evaluator.eval_accuracy(greedy_x)
         ds_results["greedy"] = {"train": greedy_train_acc, "test": greedy_test_acc, "x": greedy_x}
         print(f"  Train: {greedy_train_acc:.2f}, Test: {greedy_test_acc:.2f}")
 
-        # --- Metaheuristics (reduced params for quick verification) ---
+        # --- Metaheuristics (increase slightly so you see signal) ---
         print("Running SA...")
         sa_x, sa_train_acc, _ = simulated_annealing(
             train_evaluator.eval_accuracy,
             n_dim=len(blocks),
-            iters=5,
+            iters=30,
             seed=0,
         )
         sa_test_acc = test_evaluator.eval_accuracy(sa_x)
@@ -87,8 +110,8 @@ def main() -> None:
         ga_x, ga_train_acc, _ = genetic_algorithm(
             train_evaluator.eval_accuracy,
             n_dim=len(blocks),
-            pop_size=4,
-            generations=3,
+            pop_size=12,
+            generations=15,
             seed=0,
         )
         ga_test_acc = test_evaluator.eval_accuracy(ga_x)
@@ -99,8 +122,8 @@ def main() -> None:
         pso_x, pso_train_acc, _ = binary_pso(
             train_evaluator.eval_accuracy,
             n_dim=len(blocks),
-            swarm_size=4,
-            iters=3,
+            swarm_size=12,
+            iters=15,
             seed=0,
         )
         pso_test_acc = test_evaluator.eval_accuracy(pso_x)
