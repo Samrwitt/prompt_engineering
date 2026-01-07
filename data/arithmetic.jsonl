@@ -1,60 +1,34 @@
-{"q": "What is 18 - 78?", "a": "-60"}
-{"q": "What is 26 + 94?", "a": "120"}
-{"q": "What is 80 - 31?", "a": "49"}
-{"q": "What is 77 - 87?", "a": "-10"}
-{"q": "What is 37 - 79?", "a": "-42"}
-{"q": "What is 49 + 61?", "a": "110"}
-{"q": "What is 66 - 76?", "a": "-10"}
-{"q": "What is 25 - 41?", "a": "-16"}
-{"q": "What is 18 + 53?", "a": "71"}
-{"q": "What is 85 + 80?", "a": "165"}
-{"q": "What is 85 + 38?", "a": "123"}
-{"q": "What is 19 + 90?", "a": "109"}
-{"q": "What is 39 + 18?", "a": "57"}
-{"q": "What is 52 + 19?", "a": "71"}
-{"q": "What is 45 + 95?", "a": "140"}
-{"q": "What is 37 - 79?", "a": "-42"}
-{"q": "What is 83 + 83?", "a": "166"}
-{"q": "What is 41 - 70?", "a": "-29"}
-{"q": "What is 34 - 22?", "a": "12"}
-{"q": "What is 94 + 65?", "a": "159"}
-{"q": "What is 64 - 62?", "a": "2"}
-{"q": "What is 16 - 96?", "a": "-80"}
-{"q": "What is 17 + 61?", "a": "78"}
-{"q": "What is 23 - 41?", "a": "-18"}
-{"q": "What is 34 + 78?", "a": "112"}
-{"q": "What is 27 - 64?", "a": "-37"}
-{"q": "What is 45 + 69?", "a": "114"}
-{"q": "What is 19 + 66?", "a": "85"}
-{"q": "What is 16 + 93?", "a": "109"}
-{"q": "What is 21 + 40?", "a": "61"}
-{"q": "What is 62 + 72?", "a": "134"}
-{"q": "What is 37 - 61?", "a": "-24"}
-{"q": "What is 31 + 58?", "a": "89"}
-{"q": "What is 59 + 43?", "a": "102"}
-{"q": "What is 46 - 64?", "a": "-18"}
-{"q": "What is 29 - 34?", "a": "-5"}
-{"q": "What is 37 - 17?", "a": "20"}
-{"q": "What is 50 + 17?", "a": "67"}
-{"q": "What is 84 + 71?", "a": "155"}
-{"q": "What is 17 + 75?", "a": "92"}
-{"q": "What is 33 + 18?", "a": "51"}
-{"q": "What is 96 + 40?", "a": "136"}
-{"q": "What is 25 - 82?", "a": "-57"}
-{"q": "What is 84 + 86?", "a": "170"}
-{"q": "What is 89 + 20?", "a": "109"}
-{"q": "What is 94 - 84?", "a": "10"}
-{"q": "What is 43 - 36?", "a": "7"}
-{"q": "What is 40 - 43?", "a": "-3"}
-{"q": "What is 26 - 95?", "a": "-69"}
-{"q": "What is 68 - 50?", "a": "18"}
-{"q": "What is 11 + 68?", "a": "79"}
-{"q": "What is 19 + 78?", "a": "97"}
-{"q": "What is 74 + 43?", "a": "117"}
-{"q": "What is 54 + 18?", "a": "72"}
-{"q": "What is 57 + 46?", "a": "103"}
-{"q": "What is 66 + 79?", "a": "145"}
-{"q": "What is 88 - 93?", "a": "-5"}
-{"q": "What is 95 + 80?", "a": "175"}
-{"q": "What is 94 - 23?", "a": "71"}
-{"q": "What is 43 + 24?", "a": "67"}
+{"q":"John had 18 marbles and lost 78 more than he owned. What is his final number of marbles?","a":"-60"}
+{"q":"A number increased by 26 becomes 120. What was the original number?","a":"94"}
+{"q":"If you subtract 31 from 80, what do you get?","a":"49"}
+{"q":"Emma owed 87 dollars but had only 77. What is her net balance?","a":"-10"}
+{"q":"What number must you subtract from 37 to get -42?","a":"79"}
+{"q":"A box contained 49 items. After adding 61 more, how many are there now?","a":"110"}
+{"q":"What is the result of subtracting 76 from 66?","a":"-10"}
+{"q":"A temperature was 25°C and dropped by 41 degrees. What is the new temperature?","a":"-16"}
+{"q":"What is the sum of 18 and 53?","a":"71"}
+{"q":"A warehouse had 85 units and received 80 more. How many units are there?","a":"165"}
+
+{"q":"What number added to 38 equals 123?","a":"85"}
+{"q":"If 19 is added to a number and the result is 109, what was the number?","a":"90"}
+{"q":"Calculate the total when 39 items are combined with 18 more.","a":"57"}
+{"q":"A number plus 19 equals 71. Find the number.","a":"52"}
+{"q":"What is the total after adding 95 to 45?","a":"140"}
+
+{"q":"A balance of 37 decreases to -42. By how much did it change?","a":"-79"}
+{"q":"If you double 83, what is the result?","a":"166"}
+{"q":"What is the difference between 41 and 70?","a":"-29"}
+{"q":"A value of 34 is reduced by 22. What remains?","a":"12"}
+{"q":"What is the total when 94 and 65 are combined?","a":"159"}
+
+{"q":"What is left if 62 is subtracted from 64?","a":"2"}
+{"q":"A temperature of 16°C drops by 96 degrees. What is the final temperature?","a":"-80"}
+{"q":"What number plus 61 equals 78?","a":"17"}
+{"q":"What do you get when 41 is subtracted from 23?","a":"-18"}
+{"q":"Calculate the sum of 34 and 78.","a":"112"}
+
+{"q":"A quantity of 27 decreases by 64. What is the result?","a":"-37"}
+{"q":"What is the result of adding 69 to 45?","a":"114"}
+{"q":"If a number plus 66 equals 85, find the number.","a":"19"}
+{"q":"What is the total when 16 and 93 are added?","a":"109"}
+{"q":"What is the sum of 21 and 40?","a":"61"}

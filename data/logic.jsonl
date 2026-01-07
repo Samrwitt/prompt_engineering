@@ -1,60 +1,65 @@
-{"q": "Is not True true?", "a": "no"}
-{"q": "Is True AND False true?", "a": "no"}
-{"q": "Is False OR False true?", "a": "no"}
-{"q": "Is True OR True true?", "a": "yes"}
-{"q": "Is True OR True true?", "a": "yes"}
-{"q": "Is False OR True true?", "a": "yes"}
-{"q": "Is not False true?", "a": "yes"}
-{"q": "Is True OR True true?", "a": "yes"}
-{"q": "Is not True true?", "a": "no"}
-{"q": "Is not False true?", "a": "yes"}
-{"q": "Is True OR True true?", "a": "yes"}
-{"q": "Is False AND True true?", "a": "no"}
-{"q": "Is not True true?", "a": "no"}
-{"q": "Is not False true?", "a": "yes"}
-{"q": "Is True AND False true?", "a": "no"}
-{"q": "Is True OR True true?", "a": "yes"}
-{"q": "Is True AND True true?", "a": "yes"}
-{"q": "Is False OR False true?", "a": "no"}
-{"q": "Is False OR False true?", "a": "no"}
-{"q": "Is False AND True true?", "a": "no"}
-{"q": "Is not False true?", "a": "yes"}
-{"q": "Is False OR False true?", "a": "no"}
-{"q": "Is not True true?", "a": "no"}
-{"q": "Is False AND True true?", "a": "no"}
-{"q": "Is True OR False true?", "a": "yes"}
-{"q": "Is True OR False true?", "a": "yes"}
-{"q": "Is False OR False true?", "a": "no"}
-{"q": "Is True OR False true?", "a": "yes"}
-{"q": "Is True OR False true?", "a": "yes"}
-{"q": "Is not True true?", "a": "no"}
-{"q": "Is False OR False true?", "a": "no"}
-{"q": "Is True AND False true?", "a": "no"}
-{"q": "Is False AND False true?", "a": "no"}
-{"q": "Is True AND False true?", "a": "no"}
-{"q": "Is not True true?", "a": "no"}
-{"q": "Is False OR True true?", "a": "yes"}
-{"q": "Is True OR False true?", "a": "yes"}
-{"q": "Is True AND True true?", "a": "yes"}
-{"q": "Is not True true?", "a": "no"}
-{"q": "Is not True true?", "a": "no"}
-{"q": "Is False OR False true?", "a": "no"}
-{"q": "Is False AND False true?", "a": "no"}
-{"q": "Is False OR False true?", "a": "no"}
-{"q": "Is not False true?", "a": "yes"}
-{"q": "Is not True true?", "a": "no"}
-{"q": "Is not False true?", "a": "yes"}
-{"q": "Is not False true?", "a": "yes"}
-{"q": "Is False OR False true?", "a": "no"}
-{"q": "Is True OR False true?", "a": "yes"}
-{"q": "Is not True true?", "a": "no"}
-{"q": "Is False OR False true?", "a": "no"}
-{"q": "Is not False true?", "a": "yes"}
-{"q": "Is False AND False true?", "a": "no"}
-{"q": "Is False OR True true?", "a": "yes"}
-{"q": "Is not True true?", "a": "no"}
-{"q": "Is not False true?", "a": "yes"}
-{"q": "Is not False true?", "a": "yes"}
-{"q": "Is not False true?", "a": "yes"}
-{"q": "Is False AND False true?", "a": "no"}
-{"q": "Is True AND False true?", "a": "no"}
+{"q":"Evaluate: NOT (True AND False). Is it true? Answer yes or no only.","a":"yes"}
+{"q":"Evaluate: (True AND False) OR (False OR True). Is it true?","a":"yes"}
+{"q":"Evaluate: (False OR False) AND (NOT False). Is it true?","a":"no"}
+{"q":"Evaluate: NOT True OR True AND False. Use precedence NOT > AND > OR. Is it true?","a":"no"}
+{"q":"Evaluate: (NOT True OR True) AND False. Is it true?","a":"no"}
+{"q":"Evaluate: NOT (True OR False) AND True. Is it true?","a":"no"}
+{"q":"Evaluate: NOT (False OR False) AND True. Is it true?","a":"yes"}
+{"q":"Evaluate: (True OR False) AND (False OR False). Is it true?","a":"no"}
+{"q":"Evaluate: (True OR False) AND NOT (False AND True). Is it true?","a":"yes"}
+{"q":"Evaluate: NOT (NOT True). Is it true?","a":"yes"}
+
+{"q":"Let A=True, B=False. Evaluate: A AND (NOT B). Is it true?","a":"yes"}
+{"q":"Let A=True, B=False. Evaluate: (A AND B) OR (A AND NOT B). Is it true?","a":"yes"}
+{"q":"Let A=False, B=False. Evaluate: NOT A AND (B OR True). Is it true?","a":"yes"}
+{"q":"Let A=False, B=True. Evaluate: (A OR B) AND (A OR NOT B). Is it true?","a":"no"}
+{"q":"Let A=True, B=True. Evaluate: NOT(A AND B) OR (A AND B). Is it true?","a":"yes"}
+{"q":"Let A=True, B=False. Evaluate: NOT(A OR B) OR (A AND NOT B). Is it true?","a":"yes"}
+{"q":"Let A=False, B=True. Evaluate: NOT(A OR B) OR (A AND NOT B). Is it true?","a":"no"}
+{"q":"Let A=False, B=False. Evaluate: (A OR B) OR NOT(A OR B). Is it true?","a":"yes"}
+{"q":"Let A=True, B=False. Evaluate: (A OR B) AND NOT(A AND B). Is it true?","a":"yes"}
+{"q":"Let A=True, B=True. Evaluate: (A OR B) AND NOT(A AND B). Is it true?","a":"no"}
+
+{"q":"Evaluate: True AND (False OR (True AND NOT False)). Is it true?","a":"yes"}
+{"q":"Evaluate: (False OR True) AND (NOT True OR NOT False). Is it true?","a":"yes"}
+{"q":"Evaluate: NOT(False AND (True OR False)). Is it true?","a":"yes"}
+{"q":"Evaluate: NOT(False OR (True AND True)) OR False. Is it true?","a":"no"}
+{"q":"Evaluate: (NOT False AND True) OR (NOT True AND True). Is it true?","a":"yes"}
+{"q":"Evaluate: (True AND NOT(True)) OR (False OR False). Is it true?","a":"no"}
+{"q":"Evaluate: NOT(True AND (False OR False)) AND True. Is it true?","a":"yes"}
+{"q":"Evaluate: (True OR False) AND (NOT(True OR False)). Is it true?","a":"no"}
+{"q":"Evaluate: NOT(True OR (False AND True)) AND (True OR False). Is it true?","a":"no"}
+{"q":"Evaluate: NOT(False OR (False AND True)) AND (True AND True). Is it true?","a":"yes"}
+
+{"q":"Precedence check: Evaluate: NOT True AND False OR True. (NOT > AND > OR). Is it true?","a":"yes"}
+{"q":"Precedence check: Evaluate: True OR False AND False. Is it true?","a":"yes"}
+{"q":"Precedence check: Evaluate: True AND False OR True AND False. Is it true?","a":"no"}
+{"q":"Precedence check: Evaluate: NOT False OR False AND False. Is it true?","a":"yes"}
+{"q":"Precedence check: Evaluate: NOT(False OR True) AND True OR False. Is it true?","a":"no"}
+{"q":"Precedence check: Evaluate: NOT False AND (False OR True). Is it true?","a":"yes"}
+{"q":"Precedence check: Evaluate: NOT(False AND True) OR False AND True. Is it true?","a":"yes"}
+{"q":"Precedence check: Evaluate: NOT True OR NOT False AND False. Is it true?","a":"no"}
+{"q":"Precedence check: Evaluate: (NOT True OR NOT False) AND False. Is it true?","a":"no"}
+{"q":"Precedence check: Evaluate: NOT(True AND False OR False). Is it true?","a":"yes"}
+
+{"q":"Ignore the story: 'A light is on (True), a switch is off (False)'. Evaluate: True AND (NOT False). Is it true?","a":"yes"}
+{"q":"Ignore the story: 'Door locked (False), alarm armed (True)'. Evaluate: False OR (True AND False). Is it true?","a":"no"}
+{"q":"Ignore the story: 'Sensor1=True, Sensor2=False'. Evaluate: NOT(Sensor1 AND Sensor2). Is it true?","a":"yes"}
+{"q":"Ignore the story: 'X=False, Y=True'. Evaluate: (X OR Y) AND (NOT X). Is it true?","a":"yes"}
+{"q":"Ignore the story: 'P=True, Q=True'. Evaluate: (P AND Q) AND NOT(P OR Q). Is it true?","a":"no"}
+{"q":"Ignore the story: 'R=False, S=False'. Evaluate: (R OR S) OR NOT(R OR S). Is it true?","a":"yes"}
+{"q":"Ignore the story: 'M=True, N=False'. Evaluate: (M AND N) OR (M AND NOT N). Is it true?","a":"yes"}
+{"q":"Ignore the story: 'U=False, V=True'. Evaluate: NOT(U OR V) OR (U AND V). Is it true?","a":"no"}
+{"q":"Ignore the story: 'A=True, B=False'. Evaluate: (A OR B) AND (NOT A OR NOT B). Is it true?","a":"yes"}
+{"q":"Ignore the story: 'C=True, D=True'. Evaluate: (C OR D) AND (NOT C OR NOT D). Is it true?","a":"no"}
+
+{"q":"Evaluate: NOT(True AND (NOT True OR False)). Is it true?","a":"yes"}
+{"q":"Evaluate: (NOT(False) AND (True OR False)) AND (NOT True OR True). Is it true?","a":"yes"}
+{"q":"Evaluate: (NOT True AND True) OR (NOT False AND False). Is it true?","a":"no"}
+{"q":"Evaluate: NOT( (True OR False) AND (True AND False) ). Is it true?","a":"yes"}
+{"q":"Evaluate: (True AND True) AND NOT(False OR False). Is it true?","a":"yes"}
+{"q":"Evaluate: NOT(False) AND NOT(True) OR False. Use precedence. Is it true?","a":"no"}
+{"q":"Evaluate: NOT( NOT(False) AND True ). Is it true?","a":"no"}
+{"q":"Evaluate: (NOT False OR False) AND (True AND NOT True). Is it true?","a":"no"}
+{"q":"Evaluate: (True OR False) AND (True OR (False AND NOT False)). Is it true?","a":"yes"}
+{"q":"Evaluate: NOT(False OR (True AND (False OR False))). Is it true?","a":"yes"}
