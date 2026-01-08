@@ -1,7 +1,10 @@
 [
   "Solve the problem correctly.",
   "Compute carefully; do not guess.",
-  "Do the calculation silently.",
+  "Perform the calculation step by step in your reasoning.",
   "Output ONLY the final integer (no words, no explanation).",
-  "Double-check the arithmetic before outputting."
+  "Double-check the arithmetic before outputting.",
+  "Pay attention to positive and negative numbers.",
+  "Work through the problem systematically.",
+  "Ensure your answer is a single number with no additional text."
 ]

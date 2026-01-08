@@ -12,6 +12,19 @@ from src.model import HFLLM
 _NUM_RE = re.compile(r"-?\d+(?:\.\d+)?")
 
 
+def extract_number(text: str) -> str:
+    """
+    Extract a number from text (convenience wrapper for extract_answer).
+    
+    Args:
+        text: Input text to extract number from
+        
+    Returns:
+        Extracted number as string, or empty string if none found
+    """
+    return extract_answer(text, "number")
+
+
 def load_dataset_jsonl(path: str) -> List[Dict[str, Any]]:
     items: List[Dict[str, Any]] = []
     with open(path, "r", encoding="utf-8") as f:

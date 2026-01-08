@@ -47,7 +47,7 @@ def test_evaluator_prompting():
     acc = evaluator.eval_accuracy([1])
     
     # Check what was sent to LLM
-    expected_prompt = "Think carefully.\n\nCalculate: What is 6*7?\nAnswer:"
+    expected_prompt = "Think carefully.\n\nQuestion: What is 6*7?\nAnswer (integer only): "
     call_args = mock_llm.generate.call_args
     if call_args:
         actual_prompt = call_args[0][0]

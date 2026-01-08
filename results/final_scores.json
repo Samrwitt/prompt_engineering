@@ -1,5 +1,64 @@
 {
   "arithmetic": {
+    "block_analysis": {
+      "individual_scores": {
+        "0": 0.0,
+        "1": 0.0,
+        "2": 0.0,
+        "3": 0.0,
+        "4": 0.041666666666666664,
+        "5": 0.0,
+        "6": 0.0,
+        "7": 0.0
+      },
+      "sorted_by_effectiveness": [
+        {
+          "index": 4,
+          "block": "Double-check the arithmetic before outputting.",
+          "accuracy": 0.041666666666666664
+        },
+        {
+          "index": 0,
+          "block": "Solve the problem correctly.",
+          "accuracy": 0.0
+        },
+        {
+          "index": 1,
+          "block": "Compute carefully; do not guess.",
+          "accuracy": 0.0
+        },
+        {
+          "index": 2,
+          "block": "Perform the calculation step by step in your reasoning.",
+          "accuracy": 0.0
+        },
+        {
+          "index": 3,
+          "block": "Output ONLY the final integer (no words, no explanation).",
+          "accuracy": 0.0
+        },
+        {
+          "index": 5,
+          "block": "Pay attention to positive and negative numbers.",
+          "accuracy": 0.0
+        },
+        {
+          "index": 6,
+          "block": "Work through the problem systematically.",
+          "accuracy": 0.0
+        },
+        {
+          "index": 7,
+          "block": "Ensure your answer is a single number with no additional text.",
+          "accuracy": 0.0
+        }
+      ],
+      "best_block": {
+        "index": 4,
+        "block": "Double-check the arithmetic before outputting.",
+        "accuracy": 0.041666666666666664
+      }
+    },
     "baseline": {
       "train": 0.0,
       "test": 0.0,
@@ -8,7 +67,10 @@
         0,
         0,
         1,
-        0
+        0,
+        0,
+        0,
+        1
       ],
       "blocks_path": "prompts/blocks_number.json",
       "answer_type": "number"
@@ -18,10 +80,13 @@
       "test": 0.0,
       "x": [
         0,
+        0,
+        0,
+        0,
         1,
         0,
         0,
-        1
+        0
       ]
     },
     "greedy": {
@@ -32,7 +97,10 @@
         0,
         0,
         1,
-        0
+        0,
+        0,
+        0,
+        1
       ]
     },
     "sa": {
@@ -43,6 +111,9 @@
         1,
         0,
         0,
+        1,
+        0,
+        1,
         1
       ]
     },
@@ -51,10 +122,13 @@
       "test": 0.0,
       "x": [
         0,
+        0,
+        0,
+        0,
         1,
         0,
         0,
-        1
+        0
       ]
     },
     "pso": {
@@ -62,14 +136,58 @@
       "test": 0.0,
       "x": [
         0,
+        0,
+        0,
+        0,
         1,
         0,
         0,
-        1
+        0
       ]
-    }
+    },
+    "dspy_sota": {
+      "train": 0.0,
+      "test": 0.0
+    },
+    "best_method": "baseline",
+    "best_test_acc": 0.0
   },
   "logic": {
+    "block_analysis": {
+      "individual_scores": {
+        "0": 0.4375,
+        "1": 0.4166666666666667,
+        "2": 0.4375,
+        "3": 0.4791666666666667
+      },
+      "sorted_by_effectiveness": [
+        {
+          "index": 3,
+          "block": "Do not add any explanation.",
+          "accuracy": 0.4791666666666667
+        },
+        {
+          "index": 0,
+          "block": "Answer the question correctly.",
+          "accuracy": 0.4375
+        },
+        {
+          "index": 2,
+          "block": "Answer with ONLY 'yes' or 'no'.",
+          "accuracy": 0.4375
+        },
+        {
+          "index": 1,
+          "block": "Think carefully before answering.",
+          "accuracy": 0.4166666666666667
+        }
+      ],
+      "best_block": {
+        "index": 3,
+        "block": "Do not add any explanation.",
+        "accuracy": 0.4791666666666667
+      }
+    },
     "baseline": {
       "train": 0.3958333333333333,
       "test": 0.5,
@@ -84,7 +202,7 @@
     },
     "random": {
       "train": 0.5416666666666666,
-      "test": 0.5833333333333334,
+      "test": 0.5,
       "x": [
         1,
         1,
@@ -94,7 +212,7 @@
     },
     "greedy": {
       "train": 0.5416666666666666,
-      "test": 0.5833333333333334,
+      "test": 0.5,
       "x": [
         1,
         1,
@@ -103,37 +221,78 @@
       ]
     },
     "sa": {
-      "train": 0.5625,
-      "test": 0.4166666666666667,
+      "train": 0.5416666666666666,
+      "test": 0.5,
       "x": [
-        0,
+        1,
         1,
         0,
         1
       ]
     },
     "ga": {
-      "train": 0.5625,
-      "test": 0.4166666666666667,
+      "train": 0.5416666666666666,
+      "test": 0.5,
       "x": [
-        0,
+        1,
         1,
         0,
         1
       ]
     },
     "pso": {
-      "train": 0.5625,
-      "test": 0.4166666666666667,
+      "train": 0.5416666666666666,
+      "test": 0.5,
       "x": [
-        0,
+        1,
         1,
         0,
         1
       ]
-    }
+    },
+    "dspy_sota": {
+      "train": 0.0,
+      "test": 0.0
+    },
+    "best_method": "baseline",
+    "best_test_acc": 0.5
   },
   "comparative": {
+    "block_analysis": {
+      "individual_scores": {
+        "0": 0.475,
+        "1": 0.4,
+        "2": 0.475,
+        "3": 0.375
+      },
+      "sorted_by_effectiveness": [
+        {
+          "index": 0,
+          "block": "Answer the question correctly.",
+          "accuracy": 0.475
+        },
+        {
+          "index": 2,
+          "block": "Answer with ONLY 'yes' or 'no'.",
+          "accuracy": 0.475
+        },
+        {
+          "index": 1,
+          "block": "Think carefully before answering.",
+          "accuracy": 0.4
+        },
+        {
+          "index": 3,
+          "block": "Do not add any explanation.",
+          "accuracy": 0.375
+        }
+      ],
+      "best_block": {
+        "index": 0,
+        "block": "Answer the question correctly.",
+        "accuracy": 0.475
+      }
+    },
     "baseline": {
       "train": 0.475,
       "test": 0.6,
@@ -147,12 +306,12 @@
       "answer_type": "yesno"
     },
     "random": {
-      "train": 0.5,
+      "train": 0.475,
       "test": 0.6,
       "x": [
         1,
         1,
-        0,
+        1,
         1
       ]
     },
@@ -167,34 +326,40 @@
       ]
     },
     "sa": {
-      "train": 0.5,
+      "train": 0.475,
       "test": 0.6,
       "x": [
         1,
         1,
-        0,
-        1
+        1,
+        0
       ]
     },
     "ga": {
-      "train": 0.5,
+      "train": 0.475,
       "test": 0.6,
       "x": [
         1,
         1,
-        0,
+        1,
         1
       ]
     },
     "pso": {
-      "train": 0.5,
+      "train": 0.475,
       "test": 0.6,
       "x": [
         1,
         1,
-        0,
+        1,
         1
       ]
-    }
+    },
+    "dspy_sota": {
+      "train": 0.0,
+      "test": 0.0
+    },
+    "best_method": "baseline",
+    "best_test_acc": 0.6
   }
 }
