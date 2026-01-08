@@ -5,8 +5,9 @@ import re
 import random
 from pathlib import Path
 from typing import List, Dict, Tuple, Any, Optional
+from tqdm import tqdm
 
-from src.model import HFLLM
+from src.model import OllamaLLM
 
 # Matches integers or decimals, including negative
 _NUM_RE = re.compile(r"-?\d+(?:\.\d+)?")
@@ -91,7 +92,7 @@ def extract_answer(text: str, answer_type: str) -> str:
 class PromptEvaluator:
     def __init__(
         self,
-        llm: HFLLM,
+        llm: OllamaLLM,
         dataset: List[Dict[str, Any]],
         blocks: List[str],
         answer_type: str = "number",  # "yesno" | "abcd" | "number"
@@ -151,7 +152,9 @@ class PromptEvaluator:
         correct = 0
         total = len(self.dataset)
 
-        for item in self.dataset:
+        # Show progress for dataset evaluation
+        # disable=total < 5 avoids noise on tiny checks, but good for main loop
+        for item in tqdm(self.dataset, desc="Eval", leave=False, disable=total < 5):
             q = str(item["q"])
             gt = self._normalize_ground_truth(item["a"])
 

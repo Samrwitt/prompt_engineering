@@ -1,6 +1,9 @@
 [
   "Answer the question correctly.",
   "Think carefully before answering.",
-  "Answer with ONLY 'yes' or 'no'.",
-  "Do not add any explanation."
+
+  "If you are unsure, default to no.",
+  "Verify your logic.",
+  "Provide a Boolean answer."
 ]
+

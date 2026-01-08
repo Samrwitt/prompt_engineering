@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import random
 from typing import List, Tuple
+from tqdm import tqdm
 
 
 def tournament_select(pop: List[List[int]], fits: List[float], k: int = 3) -> List[int]:
@@ -28,22 +29,55 @@ def mutate(x: List[int], p: float = 0.05) -> List[int]:
 def genetic_algorithm(
     eval_fn,
     n_dim: int,
-    pop_size: int = 16,
-    generations: int = 40,
+    pop_size: int = 20,
+    generations: int = 50,
     mut_p: float = 0.05,
+    elitism: int = 2,  # Preserve top-2 best individuals
     seed: int = 0,
 ) -> Tuple[List[int], float, List[float]]:
+    """
+    Genetic Algorithm with Elitism.
+    
+    Research Standards:
+    - Tournament selection
+    - One-point crossover
+    - Bit-flip mutation
+    - ELITISM: Guarantee best solutions survive to next gen.
+    """
     random.seed(seed)
 
+    # Init population
     pop = [[random.randint(0, 1) for _ in range(n_dim)] for _ in range(pop_size)]
     fits = [eval_fn(ind) for ind in pop]
 
-    best_idx = max(range(pop_size), key=lambda i: fits[i])
-    best_x, best_f = pop[best_idx][:], fits[best_idx]
+    # helper to sort pop by fitness
+    # returns list of (fitness, individual_vector)
+    def sort_pop(p, f):
+        return sorted(zip(f, p), key=lambda pair: pair[0], reverse=True)
+
+    # Initial best
+    sorted_pop = sort_pop(pop, fits)
+    best_f, best_x = sorted_pop[0]
     curve = [best_f]
 
-    for _ in range(generations):
+    curve = [best_f]
+
+    for _ in tqdm(range(generations), desc="GA Generations", leave=False):
         new_pop = []
+        
+        # 1. Elitism: Copy best k directly
+        # Re-sort current pop just to be safe/explicit
+        sorted_pop = sort_pop(pop, fits)
+        
+        # Update global best if improved
+        if sorted_pop[0][0] > best_f:
+            best_f, best_x = sorted_pop[0]
+
+        # Carry over elites
+        for i in range(min(elitism, pop_size)):
+            new_pop.append(sorted_pop[i][1][:])
+            
+        # 2. Breed the rest
         while len(new_pop) < pop_size:
             p1 = tournament_select(pop, fits)
             p2 = tournament_select(pop, fits)
@@ -54,9 +88,14 @@ def genetic_algorithm(
         pop = new_pop
         fits = [eval_fn(ind) for ind in pop]
 
-        best_idx = max(range(pop_size), key=lambda i: fits[i])
-        if fits[best_idx] > best_f:
-            best_x, best_f = pop[best_idx][:], fits[best_idx]
+        # Record generation best (checking if we found a new global best implicitly)
+        curr_best_f = max(fits)
+        if curr_best_f > best_f:
+             # Just in case we found it in normal offspring
+             best_idx = fits.index(curr_best_f)
+             best_x = pop[best_idx][:]
+             best_f = curr_best_f
+             
         curve.append(best_f)
 
     return best_x, best_f, curve
