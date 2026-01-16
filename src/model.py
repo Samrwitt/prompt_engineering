@@ -8,7 +8,10 @@ from typing import Optional
 # ==============================
 # 🔒 GLOBAL MODEL LOCK
 # ==============================
-LOCKED_MODEL_NAME = "llama3.2" 
+LOCKED_MODEL_NAME = "llama3.2"
+  # or "tinyllama"
+ 
+
 
 @dataclass
 class LLMConfig:
@@ -20,6 +23,8 @@ class LLMConfig:
     
     # Deterministic decoding parameters
     temperature: float = 0.0
+    num_predict: int = 64
+    num_ctx: int = 512
     
     # Optional: context window size if needed, but Ollama defaults are usually fine
     

@@ -1,17 +1,27 @@
+# experiment.py (or your main runner file)
 from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, List
+
 import numpy as np
+import sys
+
+# Ensure project root is in path so we can import 'src'
+sys.path.append(str(Path(__file__).parent.parent))
 
 from src.model import OllamaLLM, LLMConfig
 from src.fitness import load_dataset_jsonl, load_blocks, PromptEvaluator, split_train_test
-from src.baseline import run_baseline, run_random_baseline, run_greedy_baseline
+from src.baseline import (
+    run_baseline,
+    run_random_baseline,
+    run_greedy_baseline,
+    run_dspy_miprov2_baseline,
+)
 from src.sa import simulated_annealing
 from src.ga import genetic_algorithm
 from src.pso import binary_pso
-
 
 
 def save_json(path: str, obj: Dict[str, Any]) -> None:
@@ -27,29 +37,25 @@ def run_multi_seed_algorithm(
     seeds: List[int],
     **algo_kwargs
 ) -> Dict[str, Any]:
-    """
-    Run an algorithm over multiple seeds and compute stats.
-    """
     test_scores = []
     train_scores = []
     best_configs = []
-    
+
     print(f"Running {algo_name} over {len(seeds)} seeds...")
-    
+
     for s in seeds:
         print(f"  > Seed {s}...", end="", flush=True)
-        # Call the heuristic
-        # Note: All our heuristics return (best_x, best_f, curve)
+
+        # Heuristics return: (best_x, best_f, curve)
         best_x, trains_acc, _ = algo_fn(
             eval_fn=evaluator_train.eval_accuracy,
             n_dim=len(evaluator_train.blocks),
             seed=s,
             **algo_kwargs
         )
-        
-        # Evaluate on test set
+
         test_acc = evaluator_test.eval_accuracy(best_x)
-        
+
         train_scores.append(trains_acc)
         test_scores.append(test_acc)
         best_configs.append(best_x)
@@ -66,20 +72,16 @@ def run_multi_seed_algorithm(
         ]
     }
 
+
 def main() -> None:
     datasets_to_run = [
         ("arithmetic", "data/arithmetic.jsonl"),
         ("logic", "data/logic.jsonl"),
-        # ("comparative", "data/comparative_reasoning.jsonl"), # Uncomment if available
     ]
 
-    # ✅ ONE model for all experiments
-    # Ollama automatically uses GPU if available.
     llm = OllamaLLM(LLMConfig())
-    
-    # Seeds for robustness
     SEEDS = [0, 1, 2, 3, 4]
-    
+
     final_results: Dict[str, Any] = {}
 
     for ds_name, ds_path in datasets_to_run:
@@ -87,7 +89,6 @@ def main() -> None:
         print(f"Running on Dataset: {ds_name}")
         print(f"==========================================")
 
-        # 1) Pick answer_type + blocks_path based on dataset
         if ds_name in ("toy_math", "arithmetic"):
             answer_type = "number"
             blocks_path = "prompts/blocks_number.json"
@@ -98,19 +99,17 @@ def main() -> None:
             answer_type = "number"
             blocks_path = "prompts/blocks_number.json"
 
-        # 2) Load blocks PER dataset type
         if not Path(blocks_path).exists():
             print(f"Skipping {ds_name}: {blocks_path} not found.")
             continue
-            
+
+        if not Path(ds_path).exists():
+            print(f"Skipping {ds_name}: {ds_path} not found.")
+            continue
+
         blocks = load_blocks(blocks_path)
         print(f"Using blocks: {blocks_path} (n={len(blocks)}) | answer_type={answer_type}")
 
-        # 3) Load and split dataset
-        if not Path(ds_path).exists():
-            print(f"Skipping {ds_path}: File not found.")
-            continue
-            
         full_data = load_dataset_jsonl(ds_path)
         train_data, test_data = split_train_test(full_data, train_ratio=0.8, seed=42)
         print(f"Data split: {len(train_data)} train, {len(test_data)} test")
@@ -120,59 +119,78 @@ def main() -> None:
 
         ds_results: Dict[str, Any] = {}
 
-        # --- Baselines ---
-        # Deterministic Base
+        # --- Your deterministic baseline (bit-vector) ---
         print("Running Deterministic Baseline...")
         base_x, base_train_acc = run_baseline(train_evaluator)
         base_test_acc = test_evaluator.eval_accuracy(base_x)
-        ds_results["baseline"] = {
-            "train": base_train_acc, 
-            "test": base_test_acc, 
-            "x": base_x
-        }
-        print(f"  Train: {base_train_acc:.2f}, Test: {base_test_acc:.2f}")
+        ds_results["baseline"] = {"train": base_train_acc, "test": base_test_acc, "x": base_x}
+        print(f"  Train: {base_train_acc:.3f}, Test: {base_test_acc:.3f}")
 
-        # Random Baseline (Multi-seed)
-        # We wrap random baseline slightly differently or just use as is in a loop?
-        # Let's treat RandomSearch as an 'algo' effectively by just calling run_random_baseline repeatedly?
-        # Actually simplest is to write a wrapper or just loop here. 
-        # But for 'research level' we usually want Random Search curve vs Algo curve.
-        # Let's skip complex Random Search stats for now and focus on optimizing heuristics.
-        
+        # --- DSPy MIPROv2 baseline (real) ---
+        # Safe: if DSPy isn't installed, this will print an error but not kill the whole run.
+        try:
+            print("Running DSPy MIPROv2 Baseline...")
+            dspy_train, dspy_test = run_dspy_miprov2_baseline(
+                train_rows=train_data[:20],
+                test_rows=test_data,
+                answer_type=answer_type,
+                auto="light",
+                seed=0,
+                base_url=LLMConfig().base_url,
+            )
+            ds_results["dspy_miprov2"] = {"train": float(dspy_train), "test": float(dspy_test)}
+            print(f"  DSPy Train: {dspy_train:.3f}, DSPy Test: {dspy_test:.3f}")
+        except Exception as e:
+            print(f"  Skipping DSPy MIPROv2 (not available): {e}")
+
         # --- Metaheuristics ---
-        
-        # 1. SA
         ds_results["sa"] = run_multi_seed_algorithm(
-            "Simulated Annealing", simulated_annealing,
-            train_evaluator, test_evaluator, SEEDS,
-            iters=20, t0=1.0, cooling=0.95
-        )
-        
-        # 2. GA
-        ds_results["ga"] = run_multi_seed_algorithm(
-            "Genetic Algorithm", genetic_algorithm,
-            train_evaluator, test_evaluator, SEEDS,
-            pop_size=8, generations=10, elitism=2
+            "Simulated Annealing",
+            simulated_annealing,
+            train_evaluator,
+            test_evaluator,
+            SEEDS,
+            iters=20,
+            t0=1.0,
+            cooling=0.95,
         )
 
-        # 3. PSO
+        ds_results["ga"] = run_multi_seed_algorithm(
+            "Genetic Algorithm",
+            genetic_algorithm,
+            train_evaluator,
+            test_evaluator,
+            SEEDS,
+            pop_size=8,
+            generations=10,
+            elitism=2,
+        )
+
         ds_results["pso"] = run_multi_seed_algorithm(
-            "PSO", binary_pso,
-            train_evaluator, test_evaluator, SEEDS,
-            swarm_size=8, iters=10, w_start=0.9, w_end=0.4
+            "PSO",
+            binary_pso,
+            train_evaluator,
+            test_evaluator,
+            SEEDS,
+            swarm_size=8,
+            iters=10,
+            w_start=0.9,
+            w_end=0.4,
         )
 
         final_results[ds_name] = ds_results
-        
-        # Print Summary
+
         print(f"\nSummary for {ds_name}:")
         print(f"  Baseline: {base_test_acc:.3f}")
+        if "dspy_miprov2" in ds_results:
+            print(f"  DSPy MIPROv2: {ds_results['dspy_miprov2']['test']:.3f}")
         print(f"  SA Mean:  {ds_results['sa']['mean_test']:.3f} ± {ds_results['sa']['std_test']:.3f}")
         print(f"  GA Mean:  {ds_results['ga']['mean_test']:.3f} ± {ds_results['ga']['std_test']:.3f}")
         print(f"  PSO Mean: {ds_results['pso']['mean_test']:.3f} ± {ds_results['pso']['std_test']:.3f}")
 
     save_json("results/final_scores.json", final_results)
-    print("\nSaved all research-level results to results/final_scores.json")
+    print("\nSaved results to results/final_scores.json")
+
 
 if __name__ == "__main__":
     main()
