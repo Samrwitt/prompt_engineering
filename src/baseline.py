@@ -5,6 +5,7 @@ from typing import List, Tuple
 from src.fitness import PromptEvaluator
 from src import dspy_local as dspy
 
+
 # --- Define DSPy Signatures representing our Intent ---
 
 class NumberQA(dspy.Signature):
@@ -43,6 +44,7 @@ def dspylike_baseline_vector(blocks: List[str], answer_type: str = "number", use
     return x
 
 
+
 def run_baseline(evaluator: PromptEvaluator) -> Tuple[List[int], float]:
     """
     Run the DSPy-like deterministic baseline.
@@ -50,6 +52,7 @@ def run_baseline(evaluator: PromptEvaluator) -> Tuple[List[int], float]:
     # Use the evaluator's own answer_type to compile the prompt
     x0 = dspylike_baseline_vector(evaluator.blocks, answer_type=evaluator.answer_type)
     return x0, evaluator.eval_accuracy(x0)
+
 
 
 def run_random_baseline(evaluator: PromptEvaluator, num_samples: int = 20, seed: int = 42) -> Tuple[List[int], float]:
@@ -73,6 +76,7 @@ def run_random_baseline(evaluator: PromptEvaluator, num_samples: int = 20, seed:
     return best_x, best_acc
 
 
+
 def run_greedy_baseline(evaluator: PromptEvaluator, steps: int = 50, seed: int = 42) -> Tuple[List[int], float]:
     """
     Greedy hill-climbing baseline:
@@ -88,6 +92,7 @@ def run_greedy_baseline(evaluator: PromptEvaluator, steps: int = 50, seed: int =
     
     best_x = list(current_x)
     best_acc = current_acc
+    
     
     for _ in range(steps):
         # Pick a random bit to flip
