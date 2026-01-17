@@ -30,16 +30,19 @@ class OllamaLLM:
             print(f"CRITICAL: Could not connect to Ollama at {self.cfg.base_url}")
             print(f"Error: {e}")
 
-    def generate_with_usage(self, text: str) -> Tuple[str, dict]:
+    def generate_with_usage(self, text: str, system: Optional[str] = None) -> Tuple[str, dict]:
         url = f"{self.cfg.base_url}/api/generate"
         payload = {
             "model": self.cfg.model_name,
             "prompt": text,
+            "system": system or "",
             "stream": False,
             "options": {
                 "temperature": self.cfg.temperature,
                 "num_predict": self.cfg.num_predict,
                 "num_ctx": self.cfg.num_ctx,
+                "num_gpu": 99,
+                "stop": ["\n"]
             },
         }
 
@@ -60,6 +63,6 @@ class OllamaLLM:
         }
         return (data.get("response", "") or "").strip(), usage
 
-    def generate(self, text: str) -> str:
-        out, _ = self.generate_with_usage(text)
+    def generate(self, text: str, system: Optional[str] = None) -> str:
+        out, _ = self.generate_with_usage(text, system=system)
         return out

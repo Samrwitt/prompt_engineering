@@ -1,0 +1,13 @@
+dataset,method,llm_calls,best_acc
+arithmetic,BASELINE_ALL,30,1.0
+arithmetic,BASELINE_ALL,30,1.0
+arithmetic,BASELINE_NONE,30,0.6666666666666666
+arithmetic,BASELINE_NONE,30,0.6666666666666666
+arithmetic,SA+,231,1.0
+arithmetic,SA+,242,1.0
+arithmetic,DE,320,1.0
+arithmetic,DE,322,0.8333333333333334
+arithmetic,GWO,287,0.8333333333333334
+arithmetic,GWO,307,0.8333333333333334
+arithmetic,HYBRID_DE_SA,398,0.8333333333333334
+arithmetic,HYBRID_DE_SA,417,0.8333333333333334

@@ -1,0 +1,20 @@
+{
+  "logic": {
+    "dspy_miprov2": {
+      "wall_time_sec": 9.161596298217773,
+      "llm_calls": null,
+      "tokens_in_est": null,
+      "tokens_out_est": null,
+      "note": "DSPy call counting not instrumented in this runner."
+    }
+  },
+  "gsm8k": {
+    "dspy_miprov2": {
+      "wall_time_sec": 104.16886258125305,
+      "llm_calls": null,
+      "tokens_in_est": null,
+      "tokens_out_est": null,
+      "note": "DSPy call counting not instrumented in this runner."
+    }
+  }
+}

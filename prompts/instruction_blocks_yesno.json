@@ -1,0 +1,6 @@
+[
+  "Task: Evaluate the given Boolean expression with constants True/False, operators NOT/AND/OR, and parentheses.",
+  "Operator precedence is: NOT > AND > OR (unless parentheses override).",
+  "Return yes if the expression evaluates to True, otherwise return no.",
+  "Output exactly one token: yes or no. No punctuation, no explanation."
+]

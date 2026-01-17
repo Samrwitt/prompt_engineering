@@ -1,7 +1,0 @@
-[
-  "You are solving a yes/no decision problem.",
-  "Think carefully and verify the logic.",
-  "Return ONLY one token: yes or no.",
-  "Do NOT include any explanation or extra text.",
-  "If the statement is not entailed, answer no."
-]

@@ -20,6 +20,8 @@ from src.de import differential_evolution_binary_sharp
 from src.gwo import grey_wolf_optimizer_binary_sharp
 from src.de_sa import hybrid_de_sa
 
+from src.simple_opt import random_search, greedy_add_one, hill_climb_bit_flip
+
 
 # -----------------------------
 # IO helpers
@@ -30,8 +32,17 @@ def load_jsonl(path: str) -> List[Dict[str, Any]]:
     with open(path, "r", encoding="utf-8") as f:
         for line in f:
             line = line.strip()
-            if line:
-                rows.append(json.loads(line))
+            if line and not line.startswith("//") and not line.startswith("#"):
+                try:
+                    obj = json.loads(line)
+                    # Map GSM8K or other formats to q/a
+                    if "question" in obj and "q" not in obj:
+                        obj["q"] = obj["question"]
+                    if "answer" in obj and "a" not in obj:
+                        obj["a"] = obj["answer"]
+                    rows.append(obj)
+                except json.JSONDecodeError:
+                    continue
     return rows
 
 
@@ -101,6 +112,8 @@ class RunReport:
     wall_time_sec: float
     budget: BudgetStats
     best_x: List[int]
+    best_instruction_text: str = ""
+    selected_demo_indices: List[int] = None
 
 
 # -----------------------------
@@ -161,12 +174,12 @@ def normalize_gt(a_raw: Any, answer_type: str) -> str:
     return a
 
 
-def format_input(prompt_prefix: str, q: str, answer_type: str) -> str:
+def format_input(q: str, answer_type: str) -> str:
     if answer_type == "yesno":
-        return f"{prompt_prefix}\n\nQuestion: {q}\nAnswer (yes or no): "
+        return f"Question: {q}\nAnswer (yes or no): "
     if answer_type == "abcd":
-        return f"{prompt_prefix}\n\nQuestion: {q}\nAnswer (A/B/C/D): "
-    return f"{prompt_prefix}\n\nQuestion: {q}\nAnswer (integer only): "
+        return f"Question: {q}\nAnswer (A/B/C/D): "
+    return f"Question: {q}\nAnswer (integer only): "
 
 
 # -----------------------------
@@ -193,6 +206,7 @@ class BudgetedEvaluator:
         self,
         llm: OllamaLLM,
         blocks: List[str],
+        demo_candidates: List[Dict[str, Any]],
         answer_type: str,
         budget: BudgetStats,
         cache: Dict[Tuple[Tuple[int, ...], str], str],
@@ -200,6 +214,7 @@ class BudgetedEvaluator:
     ) -> None:
         self.llm = llm
         self.blocks = blocks
+        self.demo_candidates = demo_candidates
         self.answer_type = answer_type
         self.budget = budget
         self.cache = cache
@@ -208,11 +223,11 @@ class BudgetedEvaluator:
         self.best_so_far: float = -1.0
         self.curve: List[Tuple[int, float]] = []  # (llm_calls, best_acc)
 
-    def _call_llm(self, prompt: str) -> str:
+    def _call_llm(self, prompt: str, system: str = "") -> str:
         if self.budget.llm_calls >= self.eval_cfg.max_llm_calls:
             # Hard budget stop: no more calls allowed
             return ""
-        out = self.llm.generate(prompt)
+        out = self.llm.generate(prompt, system=system)
         self.budget.add_call(prompt, out)
         return out
 
@@ -238,26 +253,49 @@ class BudgetedEvaluator:
             idx = idx[: max(1, min(self.eval_cfg.fast_k, len(idx)))]
             rows = [dataset[i] for i in idx]
 
-        prompt_prefix = build_prompt(self.blocks, x)
-        x_key = tuple(int(b) for b in x)
+        # Parse x: [x_instr (len=n_blocks), x_demo (len=n_demos)]
+        n_blocks = len(self.blocks)
+        n_demos = len(self.demo_candidates)
+        
+        if len(x) < n_blocks:
+            x_instr = x
+            x_demo = []
+        else:
+            x_instr = x[:n_blocks]
+            x_demo = x[n_blocks : n_blocks + n_demos]
 
+        system_prompt = build_prompt(self.blocks, x_instr)
+        
+        # Build few-shot prefix + stable cache key components
+        MAX_DEMOS = 5
+        selected_indices = [i for i, bit in enumerate(x_demo) if int(bit) == 1]
+        final_demo_indices = tuple(selected_indices[:MAX_DEMOS])
+        
+        demo_prefix = ""
+        for idx in final_demo_indices:
+            d = self.demo_candidates[idx]
+            demo_prefix += f"Question: {d['q']}\nAnswer: {d['a']}\n\n"
+
+        # Stable cache key: (instr_bits, demo_indices, dataset_q)
+        instr_key = tuple(int(b) for b in x_instr)
+        
         correct = 0
         total = len(rows)
 
         for i, item in enumerate(rows):
-            # If budget exceeded, stop (returns partial accuracy so optimizers still progress)
             if self.budget.llm_calls >= self.eval_cfg.max_llm_calls:
                 break
 
             q = str(item["q"])
             gt = normalize_gt(item["a"], self.answer_type)
 
-            key = (x_key, q)
+            key = (instr_key, final_demo_indices, q)
             if key in self.cache:
                 out = self.cache[key]
             else:
-                inp = format_input(prompt_prefix, q, self.answer_type)
-                out = self._call_llm(inp)
+                final_q_block = format_input(q, self.answer_type)
+                inp = demo_prefix + final_q_block
+                out = self._call_llm(inp, system=system_prompt)
                 self.cache[key] = out
 
             pred = extract_answer(out, self.answer_type)
@@ -289,6 +327,7 @@ def run_budgeted_metaheuristic(
     method: str,
     algo_fn,
     blocks: List[str],
+    demo_candidates: List[Dict[str, Any]],
     answer_type: str,
     llm: OllamaLLM,
     train_data: List[Dict[str, Any]],
@@ -301,7 +340,7 @@ def run_budgeted_metaheuristic(
 
     budget = BudgetStats()
     cache: Dict[Tuple[Tuple[int, ...], str], str] = {}
-    evaluator = BudgetedEvaluator(llm, blocks, answer_type, budget, cache, eval_cfg)
+    evaluator = BudgetedEvaluator(llm, blocks, demo_candidates, answer_type, budget, cache, eval_cfg)
 
     # Fitness function used by optimizer (FAST)
     def fast_eval(x: List[int], current_best: float = -1.0) -> float:
@@ -317,19 +356,40 @@ def run_budgeted_metaheuristic(
             best_seen["f"] = f
         return f
 
-    # Run optimization (under same eval function + same budget cap)
-    best_x, best_fast, _curve = algo_fn(
+    # Decision dimension = Instructions + Candidates
+    n_dim = len(blocks) + len(demo_candidates)
+
+    # Reserve budget for final evaluations: len(train) + len(test)
+    # Note: Evaluator stop will kick in. 
+    # But we want the algorithm to know the search_budget
+    total_eval_budget = len(train_data) + len(test_data)
+    search_limit = max(0, eval_cfg.max_llm_calls - total_eval_budget)
+    
+    # Temporarily restrict evaluator for search
+    orig_max = eval_cfg.max_llm_calls
+    eval_cfg.max_llm_calls = search_limit
+
+    # Run optimization
+    best_x, best_fast, _hist = algo_fn(
         eval_fn=eval_fn,
-        n_dim=len(blocks),
+        n_dim=n_dim,
         seed=seed,
         **algo_kwargs,
     )
+    
+    # Restore budget for final evaluation
+    eval_cfg.max_llm_calls = orig_max
 
-    # Full train + full test (still under remaining budget, but uses cache heavily)
+    # Full train + full test (still under remaining budget, uses cache heavily)
     train_acc = evaluator.accuracy(best_x, train_data, current_best=-1.0, fast=False, seed=seed)
     test_acc = evaluator.accuracy(best_x, test_data, current_best=-1.0, fast=False, seed=seed)
 
     wall = time.time() - t0
+
+    # Extract demo indices for reporting
+    n_blocks = len(blocks)
+    x_demo = best_x[n_blocks:] if len(best_x) > n_blocks else []
+    selected_demos = [i for i, b in enumerate(x_demo) if int(b) == 1][:5]
 
     return RunReport(
         dataset="",
@@ -340,6 +400,8 @@ def run_budgeted_metaheuristic(
         wall_time_sec=float(wall),
         budget=budget,
         best_x=[int(b) for b in best_x],
+        best_instruction_text=build_prompt(blocks, best_x[:n_blocks]),
+        selected_demo_indices=selected_demos,
     )
 
 
@@ -388,6 +450,8 @@ def plot_curves_png(
     dataset_name: str,
     curves: Dict[str, List[Tuple[int, float]]],
 ) -> None:
+    import matplotlib
+    matplotlib.use("Agg")  # Force non-interactive backend
     import matplotlib.pyplot as plt
 
     plt.figure()
@@ -412,38 +476,97 @@ def plot_curves_png(
 # -----------------------------
 
 def main() -> None:
-    datasets_to_run = [
-        ("arithmetic", "data/arithmetic.jsonl"),
-        ("logic", "data/logic.jsonl"),
-    ]
+    parser = __import__("argparse").ArgumentParser()
+    parser.add_argument("--fast", action="store_true", help="Run in fast debug mode (cleaner logic)")
+    parser.add_argument("--research", action="store_true", help="Run in full research mode")
+    parser.add_argument("--balanced", action="store_true", help="Run in balanced mode (middle ground)")
+    parser.add_argument("--max_data", type=int, default=None, help="Limit number of items per dataset")
+    args = parser.parse_args()
 
+    use_fast = args.fast
+    use_balanced = args.balanced
+    max_data = args.max_data
+    
+    if use_fast:
+        print(">>> FAST MODE: 1 seed, max_data=10, budget=100. <<<")
+        run_max_data = 10
+        RUN_CFG = {
+            "max_llm_calls": 100,
+            "fast_k": 5,
+            "seeds": [0],
+            "sa_iters": 20,
+            "pop_size": 8,
+            "de_iters": 10,
+            "gwo_iters": 10,
+            "hybrid_de": 10,
+            "hybrid_sa": 10,
+        }
+    elif use_balanced:
+        print(">>> BALANCED MODE: 3 seeds, max_data=20, budget=300. <<<")
+        run_max_data = 20
+        RUN_CFG = {
+            "max_llm_calls": 300,
+            "fast_k": 10,
+            "seeds": [0, 1, 2],
+            "sa_iters": 30,
+            "pop_size": 12,
+            "de_iters": 15,
+            "gwo_iters": 15,
+            "hybrid_de": 10,
+            "hybrid_sa": 20,
+        }
+    else:
+        print(">>> RESEARCH MODE: 10 seeds, max_data=100, budget=1000. <<<")
+        run_max_data = 100
+        RUN_CFG = {
+            "max_llm_calls": 1000,
+            "fast_k": 20,
+            "seeds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            "sa_iters": 40,
+            "pop_size": 20,
+            "de_iters": 30,
+            "gwo_iters": 30,
+            "hybrid_de": 20,
+            "hybrid_sa": 40,
+        }
+
+    # Override max_data if manually provided
+    if max_data is not None:
+        run_max_data = max_data
+
+    dataset_list = [
+        #("arithmetic", "data/arithmetic.jsonl"),
+        ("logic", "data/bbh_boolean_expressions.jsonl"),
+        ("gsm8k", "data/gsm8k_sample.jsonl"),
+    ]
+    
+    # In fast mode, maybe only run one dataset? Let's run both but quickly.
+    
     cfg = LLMConfig()
     llm = OllamaLLM(cfg)
 
-    SEEDS = [0, 1, 2, 3, 4]
+    SEEDS = RUN_CFG["seeds"]
 
-    # FAIR budget per method per seed (tune this!)
-    # This is the main “research knob”.
     EVAL_CFG = EvalConfig(
-        max_llm_calls=600,   # total calls allowed per (method, seed, dataset)
-        fast_k=16,           # "fast fitness" subset size
+        max_llm_calls=RUN_CFG["max_llm_calls"],
+        fast_k=RUN_CFG["fast_k"],
         early_stop=True,
     )
 
     final_scores: Dict[str, Any] = {}
     budget_report: Dict[str, Any] = {}
 
-    for ds_name, ds_path in datasets_to_run:
+    for ds_name, ds_path in dataset_list:
         print("\n==========================================")
-        print(f"Running on Dataset: {ds_name}")
+        print(f"Running on Dataset: {ds_name} | Mode: {'FAST' if use_fast else 'RESEARCH'}")
         print("==========================================")
 
         if ds_name in ("toy_math", "arithmetic"):
             answer_type = "number"
-            blocks_path = "prompts/blocks_number.json"
+            blocks_path = "prompts/instruction_blocks_number.json"
         else:
             answer_type = "yesno"
-            blocks_path = "prompts/blocks_yesno.json"
+            blocks_path = "prompts/instruction_blocks_yesno.json"
 
         if not Path(blocks_path).exists():
             print(f"Skipping {ds_name}: {blocks_path} not found.")
@@ -454,6 +577,11 @@ def main() -> None:
 
         blocks = load_blocks(blocks_path)
         data = load_jsonl(ds_path)
+        
+        if run_max_data:
+            print(f"Limiting dataset to first {run_max_data} items.")
+            data = data[:run_max_data]
+            
         train_data, test_data = split_train_test(data, train_ratio=0.8, seed=42)
 
         print(f"Blocks: {blocks_path} (n={len(blocks)}) | answer_type={answer_type}")
@@ -465,10 +593,14 @@ def main() -> None:
         curves_for_plot: Dict[str, List[Tuple[int, float]]] = {}
 
         # ---------- DSPy baseline ----------
-        # NOTE: DSPy uses litellm under the hood; counting exact LLM calls requires hooking litellm.
-        # We still record train/test and wall-clock. Budget fields are set to None.
         try:
             print("Running DSPy MIPROv2 Baseline...")
+            if use_fast:
+                print("  (Fast mode: DSPy might still be slow, effectively skipping heavy opt or relying on baseline defaults)")
+                # We could potentially pass a 'fast' flag to baseline if it supported it, 
+                # but for now we'll just run it. It usually respects some internal defaults.
+                # Or we can skip it in fast mode? Let's run it but warn.
+            
             t0 = time.time()
             dspy_train, dspy_test = run_dspy_miprov2_baseline(
                 train_rows=train_data,
@@ -477,9 +609,28 @@ def main() -> None:
                 auto="light",
                 seed=0,
                 base_url=cfg.base_url,
+                max_bootstrapped_demos=1 if use_fast else 3,
+                max_labeled_demos=2 if use_fast else 4,
             )
             wall = time.time() - t0
             ds_scores["dspy_miprov2"] = {"train": float(dspy_train), "test": float(dspy_test)}
+            
+            # Log to runs.jsonl for unified analysis
+            _dspy_log = {
+                "dataset": ds_name,
+                "method": "dspy_miprov2",
+                "seed": 0,
+                "train_acc": float(dspy_train),
+                "test_acc": float(dspy_test),
+                "wall_time_sec": float(wall),
+                "budget": {"llm_calls": 0, "note": "DSPy budget not instrumented"},
+                "best_x": [],
+                "best_instruction_text": "DSPy Optimized Prompt",
+                "selected_demo_indices": []
+            }
+            with open("results/runs.jsonl", "a", encoding="utf-8") as _f:
+                _f.write(json.dumps(_dspy_log) + "\n")
+
             ds_budget["dspy_miprov2"] = {
                 "wall_time_sec": float(wall),
                 "llm_calls": None,
@@ -491,21 +642,54 @@ def main() -> None:
         except Exception as e:
             print(f"  Skipping DSPy MIPROv2: {e}")
 
-        # ---------- Metaheuristics under fair budget ----------
+        # Use training set as demo candidates.
+        # Warning: if training set is large, n_dim grows. 
+        # But we want to select *from* the train set.
+        demo_candidates = train_data 
+        
+        # ---------- Baselines (Fixed) ----------
+        def fixed_baseline(eval_fn, n_dim, seed, x_fixed, **kwargs):
+            # If x_fixed provided is short, pad with 0s? 
+            # Or just assume caller provides correct length? 
+            # Let's pad it to n_dim to be safe.
+            full_x = x_fixed[:]
+            if len(full_x) < n_dim:
+                full_x += [0] * (n_dim - len(full_x))
+            val = eval_fn(full_x)
+            return full_x, val, [val]
+
+        # ---------- Metaheuristics matches ----------
+        # Note: Fixed baselines need to pad their vectors for the new demo space (0s = no demos)
+        ones_blocks = [1] * len(blocks)
+        zeros_blocks = [0] * len(blocks)
+        
         methods = [
-            ("SA+", simulated_annealing_sharp, dict(iters=60, t0=1.0, cooling=0.97, stagnation_reheat=12)),
-            ("DE", differential_evolution_binary_sharp, dict(pop_size=18, iters=25, F=0.7, CR=0.8)),
-            ("GWO", grey_wolf_optimizer_binary_sharp, dict(pack_size=18, iters=25)),
+            ("BASELINE_ALL", fixed_baseline, dict(x_fixed=ones_blocks)),
+            ("BASELINE_NONE", fixed_baseline, dict(x_fixed=zeros_blocks)),
+            # New Simple Baselines
+            ("RANDOM", random_search, dict(iters=min(50, RUN_CFG["max_llm_calls"]))), 
+            ("GREEDY", greedy_add_one, dict(restarts=1)),
+            
+            # Metaheuristics
+            ("SA+", simulated_annealing_sharp, dict(
+                iters=RUN_CFG["sa_iters"], t0=1.0, cooling=0.97, stagnation_reheat=12
+            )),
+            ("DE", differential_evolution_binary_sharp, dict(
+                pop_size=RUN_CFG["pop_size"], iters=RUN_CFG["de_iters"], F=0.7, CR=0.8
+            )),
+            ("GWO", grey_wolf_optimizer_binary_sharp, dict(
+                pack_size=RUN_CFG["pop_size"], iters=RUN_CFG["gwo_iters"]
+            )),
             ("HYBRID_DE_SA", hybrid_de_sa, dict(
-                pop_size=18, de_iters=20,
-                sa_iters=40,
+                pop_size=RUN_CFG["pop_size"], 
+                de_iters=RUN_CFG["hybrid_de"], 
+                sa_iters=RUN_CFG["hybrid_sa"]
             )),
         ]
 
         for method_name, algo_fn, algo_kwargs in methods:
             print(f"Running {method_name} over {len(SEEDS)} seeds...")
             reports: List[RunReport] = []
-            # For plotting: aggregate curves across seeds by taking envelope later
             per_seed_curves: List[List[Tuple[int, float]]] = []
 
             for s in SEEDS:
@@ -513,6 +697,7 @@ def main() -> None:
                     method=method_name,
                     algo_fn=algo_fn,
                     blocks=blocks,
+                    demo_candidates=demo_candidates,
                     answer_type=answer_type,
                     llm=llm,
                     train_data=train_data,
@@ -523,27 +708,22 @@ def main() -> None:
                 )
                 rep.dataset = ds_name
                 reports.append(rep)
-
-                # Re-run curve extraction by rebuilding evaluator? We stored curve internally only.
-                # So: we reconstruct a minimal curve from budget usage:
-                # -> we store at least one point: (calls, best_test) as a fallback.
-                # If you want full curves per run, add curve export in run_budgeted_metaheuristic.
                 per_seed_curves.append([(rep.budget.llm_calls, rep.test_acc)])
 
                 print(
                     f"  Seed {s}: Train={rep.train_acc:.3f} Test={rep.test_acc:.3f} "
-                    f"Calls={rep.budget.llm_calls} Tok~in={rep.budget.prompt_tokens_est} Tok~out={rep.budget.completion_tokens_est} "
+                    f"Calls={rep.budget.llm_calls} "
                     f"Time={rep.wall_time_sec:.1f}s"
                 )
+                
+                # Log to runs.jsonl
+                _log_entry = asdict(rep)
+                _log_entry["dataset"] = ds_name # explicit set
+                with open("results/runs.jsonl", "a", encoding="utf-8") as _f:
+                    _f.write(json.dumps(_log_entry) + "\n")
 
             ds_scores[method_name] = summarize_reports(reports)
 
-            # Build a simple “best-vs-budget” curve across seeds:
-            # Here we only have one point per seed (end-of-run). If you want detailed curves,
-            # add `curve` to RunReport and append evaluator.curve inside runner.
-            # Still publishable if you present “final accuracy at fixed budget”.
-            # But: we also write CSV and PNG; they’ll be flat with current settings.
-            # Upgrade path: export evaluator.curve per run.
             all_pts: List[Tuple[int, float]] = []
             for pts in per_seed_curves:
                 all_pts.extend(pts)

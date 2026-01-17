@@ -1,0 +1,58 @@
+{
+  "logic": {
+    "BASELINE_NONE": {
+      "p_value": 1.0,
+      "significant": false
+    },
+    "DE": {
+      "p_value": 1.0,
+      "significant": false
+    },
+    "GREEDY": {
+      "p_value": 1.0,
+      "significant": false
+    },
+    "GWO": {
+      "p_value": 1.0,
+      "significant": false
+    },
+    "HILL_CLIMB": {
+      "p_value": 1.0,
+      "significant": false
+    },
+    "HYBRID_DE_SA": {
+      "p_value": 1.0,
+      "significant": false
+    },
+    "RANDOM": {
+      "p_value": 1.0,
+      "significant": false
+    },
+    "SA+": {
+      "p_value": 1.0,
+      "significant": false
+    }
+  },
+  "gsm8k": {
+    "BASELINE_NONE": {
+      "p_value": 1.0,
+      "significant": false
+    },
+    "GREEDY": {
+      "p_value": 1.0,
+      "significant": false
+    },
+    "HILL_CLIMB": {
+      "p_value": 1.0,
+      "significant": false
+    },
+    "RANDOM": {
+      "p_value": 1.0,
+      "significant": false
+    },
+    "SA+": {
+      "p_value": 1.0,
+      "significant": false
+    }
+  }
+}

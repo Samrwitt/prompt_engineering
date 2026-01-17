@@ -1,0 +1,52 @@
+# Prompt Optimization with Metaheuristics
+
+This project implements a framework for optimizing LLM prompts (instructions + few-shot demos) using metaheuristic algorithms (Simulated Annealing, Differential Evolution, GWO) and compares them against DSPy and standard baselines.
+
+## Setup
+
+1. **Install Dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. **Install Ollama**:
+   Ensure Ollama is installed and running. Pull the model:
+   ```bash
+   ollama pull llama3.2
+   ```
+
+## Reproduction Instructions
+
+### 1. Fast Debug Run
+To verify the pipeline works (small budget, 1 seed):
+```bash
+python -m src.experiment --fast
+```
+
+### 2. Balanced Run (Recommended)
+Accurate enough for insights, fast enough to iterate (200 calls, 3 seeds):
+```bash
+python -m src.experiment --balanced
+```
+
+### 3. Full Research Run
+For final paper results (600 calls, strict budget, 5+ seeds):
+```bash
+python -m src.experiment --research
+```
+
+## Analysis
+
+Results are logged to `results/runs.jsonl`. Validation artifacts (curves, scores) are in `results/`.
+
+### Statistical Significance
+Generate Wilcoxon signed-rank test results:
+```bash
+python src/stats.py
+```
+Output: `results/significance.json`
+
+### Prompt Visualization
+Inspect the best discovered prompts:
+```bash
+python src/visualize.py
+```

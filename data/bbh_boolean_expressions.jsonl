@@ -1,0 +1,15 @@
+{"q": "Evaluate: True AND False OR True.", "a": "yes"}
+{"q": "Evaluate: NOT (True OR False) AND True.", "a": "no"}
+{"q": "Evaluate: NOT False AND (False OR True) AND True.", "a": "yes"}
+{"q": "Evaluate: True OR NOT False AND False OR NOT True.", "a": "yes"}
+{"q": "Evaluate: (True AND False) OR (False AND True) OR True.", "a": "yes"}
+{"q": "Evaluate: NOT (True AND True) AND (False OR False).", "a": "no"}
+{"q": "Evaluate: True AND (True OR NOT True) AND False.", "a": "no"}
+{"q": "Evaluate: NOT True OR NOT False AND True OR False.", "a": "yes"}
+{"q": "Evaluate: ((True OR False) AND NOT False) OR False.", "a": "yes"}
+{"q": "Evaluate: NOT (False AND NOT True OR True) AND True.", "a": "no"}
+{"q": "Evaluate: True OR (False AND True) OR (NOT True AND False).", "a": "yes"}
+{"q": "Evaluate: (False OR True) AND NOT (True AND False).", "a": "yes"}
+{"q": "Evaluate: NOT True AND NOT False OR True AND False.", "a": "no"}
+{"q": "Evaluate: (NOT False OR False) AND True AND NOT True.", "a": "no"}
+{"q": "Evaluate: True AND (False OR NOT False) AND True.", "a": "yes"}

@@ -1,0 +1,10 @@
+dataset,method,llm_calls,best_acc
+logic,BASELINE_ALL,5,0.0
+logic,BASELINE_NONE,5,1.0
+logic,RANDOM,50,0.0
+logic,GREEDY,50,0.0
+logic,HILL_CLIMB,50,0.0
+logic,SA+,50,0.0
+logic,DE,50,0.0
+logic,GWO,50,0.0
+logic,HYBRID_DE_SA,50,0.0
