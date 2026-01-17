@@ -1,52 +1,53 @@
-# Prompt Optimization with Metaheuristics
+Prompt Optimization Using Metaheuristics
 
-This project implements a framework for optimizing LLM prompts (instructions + few-shot demos) using metaheuristic algorithms (Simulated Annealing, Differential Evolution, GWO) and compares them against DSPy and standard baselines.
+This project presents a framework for optimizing LLM prompts—comprising instructions and few-shot examples—through metaheuristic methods such as Simulated Annealing, Differential Evolution, and Grey Wolf Optimizer (GWO). The performance of these methods is evaluated in comparison with DSPy and standard baseline approaches.
 
-## Setup
+Setup
 
-1. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-2. **Install Ollama**:
-   Ensure Ollama is installed and running. Pull the model:
-   ```bash
-   ollama pull llama3.2
-   ```
+Install Dependencies
 
-## Reproduction Instructions
+pip install -r requirements.txt
 
-### 1. Fast Debug Run
-To verify the pipeline works (small budget, 1 seed):
-```bash
+
+Install Ollama
+Make sure Ollama is installed and running, then download the required model:
+
+ollama pull llama3.2
+
+Reproducing Results
+1. Quick Debug Run
+
+Use this option to confirm that the pipeline is functioning correctly (minimal budget, single seed):
+
 python -m src.experiment --fast
-```
 
-### 2. Balanced Run (Recommended)
-Accurate enough for insights, fast enough to iterate (200 calls, 3 seeds):
-```bash
+2. Balanced Run (Recommended)
+
+Provides a good trade-off between accuracy and runtime (200 calls, 3 seeds):
+
 python -m src.experiment --balanced
-```
 
-### 3. Full Research Run
-For final paper results (600 calls, strict budget, 5+ seeds):
-```bash
+3. Full Experimental Run
+
+Intended for final research or paper-ready results (600 calls, strict budget, 5 or more seeds):
+
 python -m src.experiment --research
-```
 
-## Analysis
+Analysis
 
-Results are logged to `results/runs.jsonl`. Validation artifacts (curves, scores) are in `results/`.
+All run results are recorded in results/runs.jsonl, while validation outputs such as learning curves and scores are stored in the results/ directory.
 
-### Statistical Significance
-Generate Wilcoxon signed-rank test results:
-```bash
+Statistical Significance
+
+To compute Wilcoxon signed-rank test statistics, run:
+
 python src/stats.py
-```
-Output: `results/significance.json`
 
-### Prompt Visualization
-Inspect the best discovered prompts:
-```bash
+
+The results will be saved to results/significance.json.
+
+Prompt Visualization
+
+To review the highest-performing prompts discovered by the system:
+
 python src/visualize.py
-```
