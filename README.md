@@ -1,31 +1,59 @@
-## prompt_engineering
+# Prompt Engineering Toolkit
 
-Lightweight toolkit and experiments for prompt engineering and prompt-search algorithms.
+A lightweight research toolkit for experimenting with prompt engineering techniques and prompt-search algorithms.
 
+This repository contains reusable scripts, datasets, and local-model artifacts designed to **systematically evaluate, optimize, and compare prompts** using classical optimization methods such as Genetic Algorithms (GA), Particle Swarm Optimization (PSO), and Simulated Annealing (SA).
 
-This repository contains scripts, datasets and local-model artifacts used to evaluate and evolve prompts (GA/PSO/SA), measure prompt fitness, and run repeatable experiments.
+The goal is to move beyond ad-hoc prompt tweaking and toward **repeatable, measurable prompt experimentation**.
 
-### Contents
+---
 
-- `data/` — JSONL datasets used by experiments (arithmetic, logic, comparative_reasoning).
-- `models/flan-t5-base/` — local model files/tokenizers used for offline evaluation.
-- `prompts/` — example prompt blocks used by the experiments.
-- `results/` — generated curves and final scores from past runs.
-- `src/` — core library and experiment code:
-  - `model.py`, `dspy_local.py` — model inference wrapper(s)
-  - `fitness.py` — fitness/evaluation functions for prompts
-  - `ga.py`, `pso.py`, `sa.py` — search/optimizers (genetic algorithm, particle swarm, simulated annealing)
-  - `experiment.py`, `generate_data.py` — orchestration and dataset generation utilities
-  - `baseline.py`, `sota_dspy.py` — baseline and SOTA evaluation helpers
-- Top-level scripts:
-  - `debug_model.py` — quick model debug/run script
-  - `test_dspy.py` — small test harness used during development
-  - `verify_fix.py` / `verify_debug.py` — verification helpers
+## Motivation
 
-### Requirements
+Prompt engineering is often treated as a trial-and-error process driven by intuition.
+This project explores a more structured approach: **searching the prompt space using optimization algorithms combined with explicit fitness functions**.
 
-- Python 3.10+ recommended.
-- Install runtime deps from `requirements.txt`:
+By formalizing prompt evaluation, the repository enables:
+
+* reproducible experiments,
+* objective comparison between prompt variants, and
+* offline evaluation using local language models.
+
+---
+
+## Repository Structure
+
+```
+.
+├── data/                  # JSONL datasets used for evaluation (arithmetic, logic, reasoning)
+├── models/
+│   └── flan-t5-base/       # Local model files and tokenizers for offline inference
+├── prompts/               # Example prompt templates and prompt blocks
+├── results/               # Generated experiment outputs (scores, curves, plots)
+├── src/
+│   ├── model.py            # Local model inference wrapper
+│   ├── dspy_local.py       # DSPy-compatible local model interface
+│   ├── fitness.py          # Prompt evaluation and scoring functions
+│   ├── ga.py               # Genetic Algorithm optimizer
+│   ├── pso.py              # Particle Swarm Optimization
+│   ├── sa.py               # Simulated Annealing optimizer
+│   ├── experiment.py       # Experiment orchestration logic
+│   ├── generate_data.py    # Dataset generation utilities
+│   ├── baseline.py         # Baseline evaluation helpers
+│   └── sota_dspy.py        # SOTA/DSPy-based evaluation helpers
+├── debug_model.py          # Quick sanity checks for model loading and inference
+├── test_dspy.py            # Lightweight test harness used during development
+├── verify_fix.py           # Verification helper scripts
+├── verify_debug.py         # Debug verification utilities
+└── requirements.txt
+```
+
+---
+
+## Requirements
+
+* Python **3.10+** recommended
+* Install dependencies using:
 
 ```bash
 python -m venv .venv
@@ -33,46 +61,93 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Note: the repository includes a local `models/flan-t5-base/` folder; ensure any code that expects a local model path is pointed there or change the configuration in `src/model.py`.
+> Note: The repository includes a local `models/flan-t5-base/` directory.
+> Ensure any code expecting a local model path points to this folder, or update the path configuration in `src/model.py`.
 
-### Quick start
+---
 
-- Run a simple debug or smoke test:
+## Quick Start
+
+### Run a smoke test
 
 ```bash
 python debug_model.py
 python test_dspy.py
 ```
 
-- Run an experiment (example):
+### Run an experiment
 
 ```bash
 python -m src.experiment
 ```
 
-Adjust entry points or pass arguments as needed — check the top of each script for CLI flags.
+Most scripts expose configurable parameters at the top of the file.
+Adjust dataset paths, prompt sources, or optimizer settings as needed.
 
-### Contract / expected I/O
+---
 
+## Typical Workflow
 
-- Inputs: dataset JSONL files in `data/`, local model files under `models/`, optional prompt JSON in `prompts/`.
-- Outputs: numeric fitness values, CSV/JSON experiment results and plots written to `results/`.
-- Error modes: missing model files, mismatched tokenizers, or malformed dataset JSONL will raise exceptions at startup — verify paths first.
+1. Prepare or generate datasets under `data/`
+2. Define or modify prompt templates in `prompts/`
+3. Select and run an optimizer (GA, PSO, or SA)
+4. Evaluate prompt fitness using defined scoring functions
+5. Inspect numeric results and plots generated in `results/`
 
-### Tests & quality gates
+---
 
-- Fast checks: `python test_dspy.py` (small unit/functional smoke)
-- Recommended: run linting and static-type checks if you add/modify code.
+## Inputs and Outputs
 
-### Notes & next steps
+**Inputs**
 
-- If you want a reproducible environment for experiments, pin exact package versions in a `requirements.lock` or use `pip-tools`/`poetry`.
-- Consider adding a small CLI in `src/experiment.py` (argparse) to simplify common workflows.
+* JSONL datasets in `data/`
+* Local model files in `models/`
+* Optional prompt definitions in `prompts/`
 
-If you'd like, I can also:
-- add a simple `Makefile` or `tasks.json` for common commands;
-- add a minimal test that validates model loading; or
-- create a short tutorial `notebook/` that walks through a single experiment run.
+**Outputs**
 
+* Numeric fitness scores
+* CSV/JSON experiment logs
+* Plots and evaluation artifacts written to `results/`
 
+**Common error cases**
 
+* Missing or misconfigured local model files
+* Tokenizer/model mismatches
+* Malformed JSONL datasets
+
+These issues will typically surface at startup; verifying paths early is recommended.
+
+---
+
+## Project Status
+
+This repository is an **experimental research playground**.
+APIs, directory structure, and evaluation logic may evolve as experiments grow and new ideas are tested.
+
+---
+
+## Roadmap
+
+* [ ] Add a small CLI (argparse) for common experiment workflows
+* [ ] Improve reproducibility with pinned dependency versions
+* [ ] Add a minimal unit test validating local model loading
+* [ ] Extend support to additional local or quantized models
+
+---
+
+## Notes
+
+If you’d like, this repository can be extended with:
+
+* a `Makefile` or task runner for common commands,
+* a short tutorial notebook demonstrating a full experiment run, or
+* improved experiment configuration via YAML/JSON.
+
+---
+
+### Suggested commit message
+
+```bash
+git commit -m "Rewrite README to clarify motivation, workflow, and project scope"
+```
