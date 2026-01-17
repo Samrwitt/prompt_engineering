@@ -2,6 +2,7 @@
 
 Lightweight toolkit and experiments for prompt engineering and prompt-search algorithms.
 
+
 This repository contains scripts, datasets and local-model artifacts used to evaluate and evolve prompts (GA/PSO/SA), measure prompt fitness, and run repeatable experiments.
 
 ### Contents
@@ -52,6 +53,7 @@ python -m src.experiment
 Adjust entry points or pass arguments as needed — check the top of each script for CLI flags.
 
 ### Contract / expected I/O
+
 
 - Inputs: dataset JSONL files in `data/`, local model files under `models/`, optional prompt JSON in `prompts/`.
 - Outputs: numeric fitness values, CSV/JSON experiment results and plots written to `results/`.
