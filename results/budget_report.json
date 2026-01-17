@@ -1,7 +1,7 @@
 {
-  "gsm8k": {
+  "logic": {
     "dspy_miprov2": {
-      "wall_time_sec": 6.376564025878906,
+      "wall_time_sec": 301.03037118911743,
       "llm_calls": null,
       "tokens_in_est": null,
       "tokens_out_est": null,
