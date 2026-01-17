@@ -1,8 +1,7 @@
 [
-  "Solve the problem correctly.",
-  "You are an expert mathematician.",
-
-  "Write out the solution logic first.",
-  "The result must be precise.",
+  "You are a careful mathematician. Solve the problem correctly.",
+  "Compute the result silently.",
+  "Output format MUST be exactly: Answer: <integer>",
+  "Output ONLY one integer after 'Answer:' (no other numbers, no units, no commas).",
   "Do not use scientific notation."
 ]

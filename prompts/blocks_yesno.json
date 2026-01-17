@@ -1,9 +1,7 @@
 [
-  "Answer the question correctly.",
-  "Think carefully before answering.",
-
-  "If you are unsure, default to no.",
-  "Verify your logic.",
-  "Provide a Boolean answer."
+  "You are solving a yes/no decision problem.",
+  "Think carefully and verify the logic.",
+  "Return ONLY one token: yes or no.",
+  "Do NOT include any explanation or extra text.",
+  "If the statement is not entailed, answer no."
 ]
-

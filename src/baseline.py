@@ -1,122 +1,63 @@
 # src/baseline.py
 from __future__ import annotations
 
-import random
 import re
 from typing import Any, Dict, List, Tuple, Optional
 
-# Reuse your locked model + base_url from src.model
 from src.model import LOCKED_MODEL_NAME, LLMConfig
 
 # -----------------------------
-# Legacy bit-vector baselines
+# Strict parsing / normalization
 # -----------------------------
 
-def run_baseline(evaluator: Any) -> Tuple[List[int], float]:
-    """Deterministic baseline: select no blocks (all zeros)."""
-    n = len(evaluator.blocks)
-    x = [0] * n
-    acc = evaluator.eval_accuracy(x)
-    return x, acc
-
-
-def run_random_baseline(
-    evaluator: Any,
-    n_iter: int = 50,
-    seed: int = 42
-) -> Tuple[List[int], float]:
-    """Random search baseline over 0/1 vectors."""
-    rng = random.Random(seed)
-    n = len(evaluator.blocks)
-    best_x = [0] * n
-    best_acc = -1.0
-
-    for _ in range(n_iter):
-        x = [rng.randint(0, 1) for _ in range(n)]
-        acc = evaluator.eval_accuracy(x)
-        if acc > best_acc:
-            best_acc = acc
-            best_x = x
-
-    return best_x, best_acc
-
-
-def run_greedy_baseline(
-    evaluator: Any,
-    max_iter: Optional[int] = None
-) -> Tuple[List[int], float]:
-    """Simple hill-climbing greedy baseline (bit-flip)."""
-    n = len(evaluator.blocks)
-    current_x = [0] * n
-    current_acc = evaluator.eval_accuracy(current_x)
-
-    if max_iter is None:
-        max_iter = n * 2  # safety
-
-    for _ in range(max_iter):
-        best_neighbor_x = list(current_x)
-        best_neighbor_acc = current_acc
-
-        for i in range(n):
-            neighbor = list(current_x)
-            neighbor[i] = 1 - neighbor[i]
-            acc = evaluator.eval_accuracy(neighbor)
-            if acc > best_neighbor_acc:
-                best_neighbor_acc = acc
-                best_neighbor_x = neighbor
-
-        if best_neighbor_acc > current_acc:
-            current_x = best_neighbor_x
-            current_acc = best_neighbor_acc
-        else:
-            break
-
-    return current_x, current_acc
-
-
-# -----------------------------
-# DSPy (MIPROv2) baseline
-# -----------------------------
+_INT_RE = re.compile(r"^-?\d+$")
 
 def _norm_yesno(s: str) -> str:
     s = (s or "").strip().lower()
-    if s.startswith(("y", "t")):
+
+    # accept common variants but normalize hard
+    if s in ("yes", "y", "true", "t", "1"):
         return "yes"
-    if s.startswith(("n", "f")):
+    if s in ("no", "n", "false", "f", "0"):
         return "no"
-    return s
 
+    # if the model rambles, try to extract a clean yes/no token
+    m = re.search(r"\b(yes|no|true|false)\b", s)
+    if m:
+        return "yes" if m.group(1) in ("yes", "true") else "no"
+    return ""  # invalid
 
-def _extract_int(s: str) -> str:
+def _extract_int_strict(s: str) -> str:
+    """
+    Return an integer string if (and only if) we can extract a valid integer.
+    Prefer a strict full-match; fallback to first integer token found.
+    """
     s = (s or "").strip()
+    if _INT_RE.match(s):
+        return s
+
+    # fallback: first integer token in text
     m = re.search(r"-?\d+", s)
     return m.group(0) if m else ""
 
+def _is_valid_answer(answer_type: str, s: str) -> bool:
+    if answer_type == "yesno":
+        return _norm_yesno(s) in ("yes", "no")
+    # number
+    return _extract_int_strict(s) != ""
+
+# -----------------------------
+# DSPy + Ollama config
+# -----------------------------
 
 def _configure_dspy_for_ollama(base_url: str) -> None:
-    """Configure DSPy to use local Ollama via LiteLLM."""
     import dspy
     lm = dspy.LM(
         f"ollama_chat/{LOCKED_MODEL_NAME}",
         api_base=base_url,
-        api_key=""  # Ollama doesn't need a key
+        api_key="",  # Ollama doesn't need a key
     )
     dspy.configure(lm=lm)
-
-
-def _make_metric(answer_type: str):
-    import dspy
-
-    def metric(example: dspy.Example, pred: dspy.Prediction, trace=None) -> float:
-        gold = str(example.answer)
-        got = str(pred.answer)
-
-        if answer_type == "yesno":
-            return 1.0 if _norm_yesno(gold) == _norm_yesno(got) else 0.0
-        return 1.0 if _extract_int(gold) == _extract_int(got) else 0.0
-
-    return metric
-
 
 def _pick_key(row: Dict[str, Any], candidates: List[str], row_idx: int) -> Any:
     for k in candidates:
@@ -127,11 +68,9 @@ def _pick_key(row: Dict[str, Any], candidates: List[str], row_idx: int) -> Any:
         f"Available keys: {sorted(list(row.keys()))}"
     )
 
-
 def _to_dspy_examples(rows: List[Dict[str, Any]]):
     import dspy
 
-    # ADD q/a here ✅
     q_keys = ["question", "q", "query", "input", "prompt", "problem", "text"]
     a_keys = ["answer", "a", "label", "output", "target", "gold"]
 
@@ -139,13 +78,34 @@ def _to_dspy_examples(rows: List[Dict[str, Any]]):
     for i, r in enumerate(rows):
         q = _pick_key(r, q_keys, i)
         a = _pick_key(r, a_keys, i)
-
-        ex = dspy.Example({"question": str(q), "answer": str(a)}).with_inputs("question")
-        examples.append(ex)
-
+        examples.append(dspy.Example(question=str(q), answer=str(a)).with_inputs("question"))
     return examples
 
+# -----------------------------
+# Metric (strict)
+# -----------------------------
 
+def _make_metric(answer_type: str):
+    import dspy
+
+    def metric(example: dspy.Example, pred: dspy.Prediction, trace=None) -> float:
+        gold = str(example.answer).strip()
+        got = str(pred.answer).strip()
+
+        if answer_type == "yesno":
+            g = _norm_yesno(gold)
+            p = _norm_yesno(got)
+            return 1.0 if (g != "" and p != "" and g == p) else 0.0
+
+        g = _extract_int_strict(gold)
+        p = _extract_int_strict(got)
+        return 1.0 if (g != "" and p != "" and g == p) else 0.0
+
+    return metric
+
+# -----------------------------
+# Baseline: DSPy (MIPROv2)
+# -----------------------------
 
 def run_dspy_miprov2_baseline(
     train_rows: List[Dict[str, Any]],
@@ -156,13 +116,13 @@ def run_dspy_miprov2_baseline(
     max_labeled_demos: int = 4,
     seed: int = 0,
     base_url: Optional[str] = None,
+    # constraints / robustness knobs
+    max_pred_retries: int = 2,
 ) -> Tuple[float, float]:
     """
-    Real DSPy baseline using MIPROv2. Returns: (train_acc, test_acc).
+    DSPy baseline using MIPROv2. Returns: (train_acc, test_acc).
 
-    Requires:
-      pip install dspy-ai litellm
-    And Ollama running locally.
+    Key idea: constrain outputs hard to avoid instruction drift and formatting noise.
     """
     import dspy
     from dspy.teleprompt import MIPROv2
@@ -170,27 +130,27 @@ def run_dspy_miprov2_baseline(
     cfg = LLMConfig()
     if base_url is None:
         base_url = cfg.base_url
-
     _configure_dspy_for_ollama(base_url)
 
+    # ---- SIGNATURES with strict output requirements ----
     class NumberQA(dspy.Signature):
-        question = dspy.InputField(desc="The math question")
-        answer = dspy.OutputField(desc="The integer answer")
+        question = dspy.InputField(desc="Problem statement.")
+        answer = dspy.OutputField(desc="Return ONLY one integer (may be negative). No words, no punctuation.")
 
     class YesNoQA(dspy.Signature):
-        question = dspy.InputField(desc="The logical question")
-        answer = dspy.OutputField(desc="Yes or No")
+        question = dspy.InputField(desc="Logical statement to evaluate.")
+        answer = dspy.OutputField(desc="Return ONLY: yes or no. No other tokens.")
 
     signature = YesNoQA if answer_type == "yesno" else NumberQA
     program = dspy.Predict(signature)
 
     metric = _make_metric(answer_type)
-
     trainset = _to_dspy_examples(train_rows)
     testset = _to_dspy_examples(test_rows)
 
     teleprompter = MIPROv2(metric=metric, auto=auto, seed=seed)
 
+    # Compile/optimize prompt parameters
     optimized_program = teleprompter.compile(
         program.deepcopy(),
         trainset=trainset,
@@ -198,10 +158,34 @@ def run_dspy_miprov2_baseline(
         max_labeled_demos=max_labeled_demos,
     )
 
+    def _predict_with_retries(q: str) -> dspy.Prediction:
+        """
+        If the model violates the output contract, retry with a tighter reminder.
+        This improves stability without changing the core algorithm.
+        """
+        reminder = ""
+        for _ in range(max_pred_retries + 1):
+            pred = optimized_program(question=(reminder + q))
+            if _is_valid_answer(answer_type, str(pred.answer)):
+                return pred
+
+            # tighten reminder
+            if answer_type == "yesno":
+                reminder = (
+                    "IMPORTANT: Output must be exactly one token: yes or no.\n"
+                    "Do not explain.\n\n"
+                )
+            else:
+                reminder = (
+                    "IMPORTANT: Output must be exactly one integer token (e.g., -10, 42).\n"
+                    "Do not explain.\n\n"
+                )
+        return pred  # last attempt (may be invalid; metric will score 0)
+
     def eval_acc(ds) -> float:
         scores = []
         for ex in ds:
-            pred = optimized_program(question=ex.question)
+            pred = _predict_with_retries(ex.question)
             scores.append(metric(ex, pred))
         return float(sum(scores) / max(1, len(scores)))
 

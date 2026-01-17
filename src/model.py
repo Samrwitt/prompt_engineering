@@ -1,82 +1,65 @@
 from __future__ import annotations
 
+import time
 import requests
-import json
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, Tuple
 
-# ==============================
-# 🔒 GLOBAL MODEL LOCK
-# ==============================
 LOCKED_MODEL_NAME = "llama3.2"
-  # or "tinyllama"
- 
-
 
 @dataclass
 class LLMConfig:
-    # Model is LOCKED — changing this has no effect
     model_name: str = LOCKED_MODEL_NAME
-
-    # Ollama host
     base_url: str = "http://localhost:11434"
-    
-    # Deterministic decoding parameters
     temperature: float = 0.0
     num_predict: int = 64
     num_ctx: int = 512
-    
-    # Optional: context window size if needed, but Ollama defaults are usually fine
-    
-class OllamaLLM:
-    """
-    Research-safe LLM wrapper for Local Ollama.
-    
-    - Uses ONE fixed model (LOCKED_MODEL_NAME)
-    - APIs into local Ollama instance
-    - Deterministic decoding (temperature=0)
-    """
+    timeout_s: int = 60
 
+class OllamaLLM:
     def __init__(self, cfg: Optional[LLMConfig] = None) -> None:
         self.cfg = cfg or LLMConfig()
-        # 🔒 Force model name
         self.cfg.model_name = LOCKED_MODEL_NAME
-        
-        # Verify connection immediately
+
+        # verify
         try:
-            res = requests.get(f"{self.cfg.base_url}/api/tags")
-            if res.status_code != 200:
-                print(f"WARN: Ollama reachable but returned {res.status_code}")
+            r = requests.get(f"{self.cfg.base_url}/api/tags", timeout=5)
+            if r.status_code != 200:
+                print(f"WARN: Ollama reachable but returned {r.status_code}")
         except Exception as e:
-            print(f"CRITICAL: Could not connect to Ollama at {self.cfg.base_url}. Is it running?")
+            print(f"CRITICAL: Could not connect to Ollama at {self.cfg.base_url}")
             print(f"Error: {e}")
 
-    def generate(self, text: str) -> str:
-        """
-        Generate answer text only.
-        """
+    def generate_with_usage(self, text: str) -> Tuple[str, dict]:
         url = f"{self.cfg.base_url}/api/generate"
-        
         payload = {
             "model": self.cfg.model_name,
             "prompt": text,
             "stream": False,
             "options": {
                 "temperature": self.cfg.temperature,
-                "num_predict": 64,  # Limit generation to avoid partial hangs
-                # "seed": 42 
-            }
+                "num_predict": self.cfg.num_predict,
+                "num_ctx": self.cfg.num_ctx,
+            },
         }
-        
-        try:
-            res = requests.post(url, json=payload, timeout=30)  # Add 30s timeout
-            if res.status_code == 200:
-                data = res.json()
-                return data.get("response", "").strip()
-            else:
-                print(f"Error generation: {res.text}")
-                return ""
-        except Exception as e:
-            print(f"Exception during generation: {e}")
-            return ""
 
+        t0 = time.time()
+        res = requests.post(url, json=payload, timeout=self.cfg.timeout_s)
+        wall = time.time() - t0
+
+        if res.status_code != 200:
+            return "", {"calls": 1, "wall_s": wall}
+
+        data = res.json()
+        # Ollama commonly returns prompt_eval_count and eval_count
+        usage = {
+            "calls": 1,
+            "wall_s": wall,
+            "prompt_tokens": int(data.get("prompt_eval_count", 0) or 0),
+            "completion_tokens": int(data.get("eval_count", 0) or 0),
+        }
+        return (data.get("response", "") or "").strip(), usage
+
+    def generate(self, text: str) -> str:
+        out, _ = self.generate_with_usage(text)
+        return out
