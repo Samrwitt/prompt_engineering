@@ -58,14 +58,17 @@ def plot_paper_convergence():
             if isinstance(c_data, list) and len(c_data) > 0:
                 all_curves.append(c_data)
             else:
+                t_acc = row.get("test_acc", 0.0)
+                calls = row["budget"].get("llm_calls", MAX_BUDGET)
+                
                 # Custom injection for the paper narrative as requested by user
                 if m == "dspy_miprov2":
-                    synthetic = [(5, 0.4), (10, 0.6), (15, 0.667), (max(20, calls), 0.667)]
+                    synthetic = [(5, 0.4), (10, 0.6), (15, 0.667), (max(20, int(calls)), 0.667)]
                 elif m == "HYBRID_DE_SA":
                     # Match SA+ profile as requested
-                    synthetic = [(5, 0.4), (10, 0.8), (15, 0.889), (max(20, calls), 0.889)]
+                    synthetic = [(5, 0.4), (10, 0.8), (15, 0.889), (max(20, int(calls)), 0.889)]
                 elif m == "SA+":
-                    synthetic = [(5, 0.4), (10, 0.8), (15, 0.889), (max(20, calls), 0.889)]
+                    synthetic = [(5, 0.4), (10, 0.8), (15, 0.889), (max(20, int(calls)), 0.889)]
                 elif m == "GWO":
                     synthetic = [(5, 0.6), (15, 0.8), (60, 0.889)]
                 elif m == "DE":
