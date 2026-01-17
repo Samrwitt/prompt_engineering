@@ -1,0 +1,91 @@
+{
+  "gsm8k": {
+    "HYBRID_DE_SA": {
+      "p_value": 0.6413321623836011,
+      "significant": false,
+      "confidence": "Moderate (Projected)"
+    },
+    "BASELINE_NONE": {
+      "p_value": 0.7648311018693017,
+      "significant": false,
+      "confidence": "Moderate (Projected)"
+    },
+    "RANDOM": {
+      "p_value": 0.975698993434998,
+      "significant": false,
+      "confidence": "Moderate (Projected)"
+    },
+    "GREEDY": {
+      "p_value": 0.4793458612777606,
+      "significant": false,
+      "confidence": "Moderate (Projected)"
+    },
+    "HILL_CLIMB": {
+      "p_value": 0.9971691771339907,
+      "significant": false,
+      "confidence": "Moderate (Projected)"
+    },
+    "SA+": {
+      "p_value": 0.9692480371484073,
+      "significant": false,
+      "confidence": "Moderate (Projected)"
+    },
+    "DE": {
+      "p_value": 0.9611338857405913,
+      "significant": false,
+      "confidence": "Moderate (Projected)"
+    },
+    "GWO": {
+      "p_value": 0.9215224056886867,
+      "significant": false,
+      "confidence": "Moderate (Projected)"
+    },
+    "dspy_miprov2": {
+      "p_value": 0.9658117202378134,
+      "significant": false,
+      "confidence": "Moderate (Projected)"
+    }
+  },
+  "logic": {
+    "BASELINE_NONE": {
+      "p_value": 0.9213503964748575,
+      "significant": false,
+      "confidence": "Moderate (Projected)"
+    },
+    "GWO": {
+      "p_value": 0.06461757994842725,
+      "significant": false,
+      "confidence": "Moderate (Projected)"
+    },
+    "HYBRID_DE_SA": {
+      "p_value": 0.8446560520736934,
+      "significant": false,
+      "confidence": "Moderate (Projected)"
+    },
+    "GREEDY": {
+      "p_value": 0.3868440567409648,
+      "significant": false,
+      "confidence": "Moderate (Projected)"
+    },
+    "RANDOM": {
+      "p_value": 0.0012430431678192135,
+      "significant": true,
+      "confidence": "High (Projected)"
+    },
+    "SA+": {
+      "p_value": 0.5975926413933744,
+      "significant": false,
+      "confidence": "Moderate (Projected)"
+    },
+    "DE": {
+      "p_value": 0.11364006297772589,
+      "significant": false,
+      "confidence": "Moderate (Projected)"
+    },
+    "dspy_miprov2": {
+      "p_value": 0.8919162750244141,
+      "significant": false,
+      "confidence": "Moderate (Projected)"
+    }
+  }
+}

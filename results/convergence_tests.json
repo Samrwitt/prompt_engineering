@@ -1,0 +1,34 @@
+{
+  "logic": {
+    "BASELINE_NONE": {
+      "mean_auc": 0.6704093567251461,
+      "p_value": 0.125,
+      "significant": false
+    },
+    "DE": {
+      "mean_auc": 0.8666666666666667,
+      "p_value": 0.125,
+      "significant": false
+    },
+    "GREEDY": {
+      "mean_auc": 0.8835087719298246,
+      "p_value": 0.125,
+      "significant": false
+    },
+    "GWO": {
+      "mean_auc": 0.8519298245614036,
+      "p_value": 0.125,
+      "significant": false
+    },
+    "RANDOM": {
+      "mean_auc": 0.8631578947368421,
+      "p_value": 0.125,
+      "significant": false
+    },
+    "SA+": {
+      "mean_auc": 0.8736842105263157,
+      "p_value": 0.125,
+      "significant": false
+    }
+  }
+}
