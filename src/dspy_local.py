@@ -2,7 +2,7 @@ from __future__ import annotations
 import dataclasses
 from typing import Dict, List, Type, Any, Optional
 
-# --- Fields ---
+
 
 @dataclasses.dataclass
 class Field:
