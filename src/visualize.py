@@ -18,9 +18,6 @@ def visualize_best_prompts():
     df = df.sort_values("test_acc", ascending=False)
     best_per_method = df.groupby(["dataset", "method"]).first().reset_index()
     
-    # We might need to load training data to show demo text
-    # But for now showing indices is a good start. 
-    # Let's try to find the training files for each dataset
     ds_to_path = {
         "logic": "data/bbh_boolean_expressions.jsonl",
         "gsm8k": "data/gsm8k_sample.jsonl"
@@ -44,7 +41,6 @@ def visualize_best_prompts():
             print(f"\n### Selected Few-Shot Demos (Indices: {demos}):")
             path = ds_to_path.get(ds_name)
             if path and Path(path).exists():
-                # Load training data (80% split)
                 from src.experiment import load_jsonl, split_train_test
                 full_data = load_jsonl(path)
                 train_data, _ = split_train_test(full_data, seed=42)
