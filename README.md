@@ -144,10 +144,3 @@ If you’d like, this repository can be extended with:
 * a short tutorial notebook demonstrating a full experiment run, or
 * improved experiment configuration via YAML/JSON.
 
----
-
-### Suggested commit message
-
-```bash
-git commit -m "Rewrite README to clarify motivation, workflow, and project scope"
-```
