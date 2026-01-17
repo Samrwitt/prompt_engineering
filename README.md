@@ -39,7 +39,7 @@ All run results are recorded in results/runs.jsonl, while validation outputs suc
 
 Statistical Significance
 
-To compute Wilcoxon signed-rank test statistics, run:
+Results are logged to `results/runs.jsonl`. Validation artifacts (curves, scores) are in `results/`.
 
 python src/stats.py
 

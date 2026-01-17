@@ -1,34 +1,35 @@
 {
-  "logic": {
+  "gsm8k": {
     "dspy_miprov2": {
-      "train": 0.8333333333333334,
+      "train": 0.6666666666666666,
       "test": 0.6666666666666666
     },
     "BASELINE_ALL": {
-      "mean_train": 0.3333333333333333,
+      "mean_train": 0.75,
       "std_train": 0.0,
-      "mean_test": 0.6666666666666666,
+      "mean_test": 1.0,
       "std_test": 0.0,
       "mean_llm_calls": 15.0,
-      "mean_prompt_tokens_est": 307.0,
-      "mean_completion_tokens_est": 15.0,
-      "mean_wall_time_sec": 109.0525496006012,
+      "mean_prompt_tokens_est": 1078.0,
+      "mean_completion_tokens_est": 2977.0,
+      "mean_wall_time_sec": 124.1208655834198,
       "runs": [
         {
-          "dataset": "logic",
+          "dataset": "gsm8k",
           "method": "BASELINE_ALL",
           "seed": 0,
-          "train_acc": 0.3333333333333333,
-          "test_acc": 0.6666666666666666,
-          "wall_time_sec": 109.0525496006012,
+          "train_acc": 0.75,
+          "test_acc": 1.0,
+          "wall_time_sec": 124.1208655834198,
           "budget": {
             "llm_calls": 15,
-            "prompt_chars": 1206,
-            "completion_chars": 30,
-            "prompt_tokens_est": 307,
-            "completion_tokens_est": 15
+            "prompt_chars": 4288,
+            "completion_chars": 11883,
+            "prompt_tokens_est": 1078,
+            "completion_tokens_est": 2977
           },
           "best_x": [
+            1,
             1,
             1,
             1,
@@ -46,36 +47,37 @@
             0,
             0
           ],
-          "best_instruction_text": "Task: Evaluate the given Boolean expression with constants True/False, operators NOT/AND/OR, and parentheses.\nOperator precedence is: NOT > AND > OR (unless parentheses override).\nReturn yes if the expression evaluates to True, otherwise return no.\nOutput exactly one token: yes or no. No punctuation, no explanation.",
+          "best_instruction_text": "You are a careful mathematician. Solve the problem correctly.\nLet's think step by step to solve the problem.\nShow your reasoning clearly, then provide the final result.\nFormat your final answer as: Answer: <integer>\nEnsure the last number in your output is the final answer.",
           "selected_demo_indices": []
         }
       ]
     },
     "BASELINE_NONE": {
-      "mean_train": 0.0,
+      "mean_train": 0.75,
       "std_train": 0.0,
-      "mean_test": 0.0,
+      "mean_test": 1.0,
       "std_test": 0.0,
       "mean_llm_calls": 15.0,
-      "mean_prompt_tokens_est": 307.0,
-      "mean_completion_tokens_est": 280.0,
-      "mean_wall_time_sec": 107.09933280944824,
+      "mean_prompt_tokens_est": 1078.0,
+      "mean_completion_tokens_est": 2284.0,
+      "mean_wall_time_sec": 116.08410453796387,
       "runs": [
         {
-          "dataset": "logic",
+          "dataset": "gsm8k",
           "method": "BASELINE_NONE",
           "seed": 0,
-          "train_acc": 0.0,
-          "test_acc": 0.0,
-          "wall_time_sec": 107.09933280944824,
+          "train_acc": 0.75,
+          "test_acc": 1.0,
+          "wall_time_sec": 116.08410453796387,
           "budget": {
             "llm_calls": 15,
-            "prompt_chars": 1206,
-            "completion_chars": 1094,
-            "prompt_tokens_est": 307,
-            "completion_tokens_est": 280
+            "prompt_chars": 4288,
+            "completion_chars": 9120,
+            "prompt_tokens_est": 1078,
+            "completion_tokens_est": 2284
           },
           "best_x": [
+            0,
             0,
             0,
             0,
@@ -99,35 +101,32 @@
       ]
     },
     "RANDOM": {
-      "mean_train": 0.4166666666666667,
+      "mean_train": 0.9166666666666666,
       "std_train": 0.0,
-      "mean_test": 0.3333333333333333,
+      "mean_test": 0.6666666666666666,
       "std_test": 0.0,
       "mean_llm_calls": 95.0,
-      "mean_prompt_tokens_est": 9900.0,
-      "mean_completion_tokens_est": 1636.0,
-      "mean_wall_time_sec": 221.84616422653198,
+      "mean_prompt_tokens_est": 40587.0,
+      "mean_completion_tokens_est": 22353.0,
+      "mean_wall_time_sec": 1007.3671944141388,
       "runs": [
         {
-          "dataset": "logic",
+          "dataset": "gsm8k",
           "method": "RANDOM",
           "seed": 0,
-          "train_acc": 0.4166666666666667,
-          "test_acc": 0.3333333333333333,
-          "wall_time_sec": 221.84616422653198,
+          "train_acc": 0.9166666666666666,
+          "test_acc": 0.6666666666666666,
+          "wall_time_sec": 1007.3671944141388,
           "budget": {
             "llm_calls": 95,
-            "prompt_chars": 39458,
-            "completion_chars": 6356,
-            "prompt_tokens_est": 9900,
-            "completion_tokens_est": 1636
+            "prompt_chars": 162209,
+            "completion_chars": 89274,
+            "prompt_tokens_est": 40587,
+            "completion_tokens_est": 22353
           },
           "best_x": [
             0,
             1,
-            1,
-            0,
-            1,
             0,
             1,
             1,
@@ -138,42 +137,46 @@
             1,
             0,
             0,
+            0,
+            0,
+            1,
+            1,
             0
           ],
-          "best_instruction_text": "Operator precedence is: NOT > AND > OR (unless parentheses override).\nReturn yes if the expression evaluates to True, otherwise return no.",
+          "best_instruction_text": "Let's think step by step to solve the problem.\nFormat your final answer as: Answer: <integer>\nEnsure the last number in your output is the final answer.",
           "selected_demo_indices": [
-            0,
+            1,
             2,
-            3,
-            5,
-            6
+            4,
+            9,
+            10
           ]
         }
       ]
     },
     "GREEDY": {
-      "mean_train": 0.4166666666666667,
+      "mean_train": 0.75,
       "std_train": 0.0,
-      "mean_test": 0.0,
+      "mean_test": 1.0,
       "std_test": 0.0,
-      "mean_llm_calls": 95.0,
-      "mean_prompt_tokens_est": 5559.0,
-      "mean_completion_tokens_est": 2118.0,
-      "mean_wall_time_sec": 224.88263535499573,
+      "mean_llm_calls": 85.0,
+      "mean_prompt_tokens_est": 14925.0,
+      "mean_completion_tokens_est": 23966.0,
+      "mean_wall_time_sec": 957.0396721363068,
       "runs": [
         {
-          "dataset": "logic",
+          "dataset": "gsm8k",
           "method": "GREEDY",
           "seed": 0,
-          "train_acc": 0.4166666666666667,
-          "test_acc": 0.0,
-          "wall_time_sec": 224.88263535499573,
+          "train_acc": 0.75,
+          "test_acc": 1.0,
+          "wall_time_sec": 957.0396721363068,
           "budget": {
-            "llm_calls": 95,
-            "prompt_chars": 22083,
-            "completion_chars": 8319,
-            "prompt_tokens_est": 5559,
-            "completion_tokens_est": 2118
+            "llm_calls": 85,
+            "prompt_chars": 59580,
+            "completion_chars": 95728,
+            "prompt_tokens_est": 14925,
+            "completion_tokens_est": 23966
           },
           "best_x": [
             0,
@@ -181,572 +184,237 @@
             0,
             0,
             0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1
+          ],
+          "best_instruction_text": "",
+          "selected_demo_indices": [
+            11
+          ]
+        }
+      ]
+    },
+    "SA+": {
+      "mean_train": 0.3333333333333333,
+      "std_train": 0.0,
+      "mean_test": 0.6666666666666666,
+      "std_test": 0.0,
+      "mean_llm_calls": 95.0,
+      "mean_prompt_tokens_est": 43974.0,
+      "mean_completion_tokens_est": 35322.0,
+      "mean_wall_time_sec": 1245.9363968372345,
+      "runs": [
+        {
+          "dataset": "gsm8k",
+          "method": "SA+",
+          "seed": 0,
+          "train_acc": 0.3333333333333333,
+          "test_acc": 0.6666666666666666,
+          "wall_time_sec": 1245.9363968372345,
+          "budget": {
+            "llm_calls": 95,
+            "prompt_chars": 175790,
+            "completion_chars": 141147,
+            "prompt_tokens_est": 43974,
+            "completion_tokens_est": 35322
+          },
+          "best_x": [
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0,
+            1,
+            0,
             1,
             0,
             0,
-            0,
-            0,
-            0,
-            0,
-            1,
             0,
             0,
             0
           ],
-          "best_instruction_text": "",
+          "best_instruction_text": "You are a careful mathematician. Solve the problem correctly.\nLet's think step by step to solve the problem.\nShow your reasoning clearly, then provide the final result.\nFormat your final answer as: Answer: <integer>",
+          "selected_demo_indices": [
+            0,
+            2,
+            4,
+            6
+          ]
+        }
+      ]
+    },
+    "DE": {
+      "mean_train": 0.75,
+      "std_train": 0.0,
+      "mean_test": 0.6666666666666666,
+      "std_test": 0.0,
+      "mean_llm_calls": 95.0,
+      "mean_prompt_tokens_est": 42319.0,
+      "mean_completion_tokens_est": 21534.0,
+      "mean_wall_time_sec": 823.2998895645142,
+      "runs": [
+        {
+          "dataset": "gsm8k",
+          "method": "DE",
+          "seed": 0,
+          "train_acc": 0.75,
+          "test_acc": 0.6666666666666666,
+          "wall_time_sec": 823.2998895645142,
+          "budget": {
+            "llm_calls": 95,
+            "prompt_chars": 169125,
+            "completion_chars": 86009,
+            "prompt_tokens_est": 42319,
+            "completion_tokens_est": 21534
+          },
+          "best_x": [
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            1,
+            0
+          ],
+          "best_instruction_text": "Format your final answer as: Answer: <integer>\nEnsure the last number in your output is the final answer.",
           "selected_demo_indices": [
             1,
+            2,
+            3,
+            4,
+            5
+          ]
+        }
+      ]
+    },
+    "GWO": {
+      "mean_train": 0.9166666666666666,
+      "std_train": 0.0,
+      "mean_test": 0.6666666666666666,
+      "std_test": 0.0,
+      "mean_llm_calls": 93.0,
+      "mean_prompt_tokens_est": 41189.0,
+      "mean_completion_tokens_est": 21332.0,
+      "mean_wall_time_sec": 778.3318452835083,
+      "runs": [
+        {
+          "dataset": "gsm8k",
+          "method": "GWO",
+          "seed": 0,
+          "train_acc": 0.9166666666666666,
+          "test_acc": 0.6666666666666666,
+          "wall_time_sec": 778.3318452835083,
+          "budget": {
+            "llm_calls": 93,
+            "prompt_chars": 164605,
+            "completion_chars": 85167,
+            "prompt_tokens_est": 41189,
+            "completion_tokens_est": 21332
+          },
+          "best_x": [
+            1,
+            0,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            0,
+            1,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            0
+          ],
+          "best_instruction_text": "You are a careful mathematician. Solve the problem correctly.\nFormat your final answer as: Answer: <integer>\nEnsure the last number in your output is the final answer.",
+          "selected_demo_indices": [
+            1,
+            2,
+            4,
+            5,
             8
           ]
         }
       ]
     },
-    "SA+": {
-      "mean_train": 0.5,
+    "HYBRID_DE_SA": {
+      "mean_train": 0.8333333333333334,
       "std_train": 0.0,
       "mean_test": 1.0,
       "std_test": 0.0,
       "mean_llm_calls": 95.0,
-      "mean_prompt_tokens_est": 10071.0,
-      "mean_completion_tokens_est": 554.0,
-      "mean_wall_time_sec": 220.89043283462524,
+      "mean_prompt_tokens_est": 43089.0,
+      "mean_completion_tokens_est": 25841.0,
+      "mean_wall_time_sec": 885.3578045368195,
       "runs": [
         {
-          "dataset": "logic",
-          "method": "SA+",
+          "dataset": "gsm8k",
+          "method": "HYBRID_DE_SA",
           "seed": 0,
-          "train_acc": 0.5,
+          "train_acc": 0.8333333333333334,
           "test_acc": 1.0,
-          "wall_time_sec": 220.89043283462524,
+          "wall_time_sec": 885.3578045368195,
           "budget": {
             "llm_calls": 95,
-            "prompt_chars": 40122,
-            "completion_chars": 2030,
-            "prompt_tokens_est": 10071,
-            "completion_tokens_est": 554
+            "prompt_chars": 172203,
+            "completion_chars": 103209,
+            "prompt_tokens_est": 43089,
+            "completion_tokens_est": 25841
           },
           "best_x": [
-            1,
-            1,
             0,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
+            0,
             0,
             0,
             1,
             0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
             0,
             1,
             0
           ],
-          "best_instruction_text": "Task: Evaluate the given Boolean expression with constants True/False, operators NOT/AND/OR, and parentheses.\nOperator precedence is: NOT > AND > OR (unless parentheses override).\nOutput exactly one token: yes or no. No punctuation, no explanation.",
+          "best_instruction_text": "Ensure the last number in your output is the final answer.",
           "selected_demo_indices": [
-            0,
-            1,
-            2,
             3,
-            4
-          ]
-        }
-      ]
-    },
-    "DE": {
-      "mean_train": 0.5,
-      "std_train": 0.0,
-      "mean_test": 0.3333333333333333,
-      "std_test": 0.0,
-      "mean_llm_calls": 95.0,
-      "mean_prompt_tokens_est": 10766.0,
-      "mean_completion_tokens_est": 1954.0,
-      "mean_wall_time_sec": 222.56953763961792,
-      "runs": [
-        {
-          "dataset": "logic",
-          "method": "DE",
-          "seed": 0,
-          "train_acc": 0.5,
-          "test_acc": 0.3333333333333333,
-          "wall_time_sec": 222.56953763961792,
-          "budget": {
-            "llm_calls": 95,
-            "prompt_chars": 42932,
-            "completion_chars": 7627,
-            "prompt_tokens_est": 10766,
-            "completion_tokens_est": 1954
-          },
-          "best_x": [
-            0,
-            1,
-            1,
-            0,
-            0,
-            0,
-            1,
-            1,
-            0,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1
-          ],
-          "best_instruction_text": "Operator precedence is: NOT > AND > OR (unless parentheses override).\nReturn yes if the expression evaluates to True, otherwise return no.",
-          "selected_demo_indices": [
-            2,
-            3,
+            4,
             5,
             6,
             7
-          ]
-        }
-      ]
-    },
-    "GWO": {
-      "mean_train": 0.4166666666666667,
-      "std_train": 0.0,
-      "mean_test": 0.3333333333333333,
-      "std_test": 0.0,
-      "mean_llm_calls": 95.0,
-      "mean_prompt_tokens_est": 10579.0,
-      "mean_completion_tokens_est": 2147.0,
-      "mean_wall_time_sec": 227.59610652923584,
-      "runs": [
-        {
-          "dataset": "logic",
-          "method": "GWO",
-          "seed": 0,
-          "train_acc": 0.4166666666666667,
-          "test_acc": 0.3333333333333333,
-          "wall_time_sec": 227.59610652923584,
-          "budget": {
-            "llm_calls": 95,
-            "prompt_chars": 42180,
-            "completion_chars": 8389,
-            "prompt_tokens_est": 10579,
-            "completion_tokens_est": 2147
-          },
-          "best_x": [
-            0,
-            1,
-            1,
-            0,
-            1,
-            0,
-            1,
-            1,
-            0,
-            1,
-            1,
-            0,
-            1,
-            0,
-            0,
-            1
-          ],
-          "best_instruction_text": "Operator precedence is: NOT > AND > OR (unless parentheses override).\nReturn yes if the expression evaluates to True, otherwise return no.",
-          "selected_demo_indices": [
-            0,
-            2,
-            3,
-            5,
-            6
-          ]
-        }
-      ]
-    },
-    "HYBRID_DE_SA": {
-      "mean_train": 0.4166666666666667,
-      "std_train": 0.0,
-      "mean_test": 0.3333333333333333,
-      "std_test": 0.0,
-      "mean_llm_calls": 95.0,
-      "mean_prompt_tokens_est": 10814.0,
-      "mean_completion_tokens_est": 1944.0,
-      "mean_wall_time_sec": 224.31557321548462,
-      "runs": [
-        {
-          "dataset": "logic",
-          "method": "HYBRID_DE_SA",
-          "seed": 0,
-          "train_acc": 0.4166666666666667,
-          "test_acc": 0.3333333333333333,
-          "wall_time_sec": 224.31557321548462,
-          "budget": {
-            "llm_calls": 95,
-            "prompt_chars": 43113,
-            "completion_chars": 7588,
-            "prompt_tokens_est": 10814,
-            "completion_tokens_est": 1944
-          },
-          "best_x": [
-            0,
-            1,
-            1,
-            0,
-            1,
-            0,
-            1,
-            1,
-            0,
-            0,
-            1,
-            1,
-            0,
-            1,
-            1,
-            0
-          ],
-          "best_instruction_text": "Operator precedence is: NOT > AND > OR (unless parentheses override).\nReturn yes if the expression evaluates to True, otherwise return no.",
-          "selected_demo_indices": [
-            0,
-            2,
-            3,
-            6,
-            7
-          ]
-        }
-      ]
-    }
-  },
-  "gsm8k": {
-    "dspy_miprov2": {
-      "train": 0.0,
-      "test": 0.0
-    },
-    "BASELINE_ALL": {
-      "mean_train": 0.0,
-      "std_train": 0.0,
-      "mean_test": 0.0,
-      "std_test": 0.0,
-      "mean_llm_calls": 5.0,
-      "mean_prompt_tokens_est": 253.0,
-      "mean_completion_tokens_est": 5.0,
-      "mean_wall_time_sec": 11.005483627319336,
-      "runs": [
-        {
-          "dataset": "gsm8k",
-          "method": "BASELINE_ALL",
-          "seed": 0,
-          "train_acc": 0.0,
-          "test_acc": 0.0,
-          "wall_time_sec": 11.005483627319336,
-          "budget": {
-            "llm_calls": 5,
-            "prompt_chars": 1004,
-            "completion_chars": 10,
-            "prompt_tokens_est": 253,
-            "completion_tokens_est": 5
-          },
-          "best_x": [
-            1,
-            1,
-            1,
-            1,
-            0,
-            0,
-            0,
-            0
-          ],
-          "best_instruction_text": "Task: Evaluate the given Boolean expression with constants True/False, operators NOT/AND/OR, and parentheses.\nOperator precedence is: NOT > AND > OR (unless parentheses override).\nReturn yes if the expression evaluates to True, otherwise return no.\nOutput exactly one token: yes or no. No punctuation, no explanation.",
-          "selected_demo_indices": []
-        }
-      ]
-    },
-    "BASELINE_NONE": {
-      "mean_train": 0.0,
-      "std_train": 0.0,
-      "mean_test": 0.0,
-      "std_test": 0.0,
-      "mean_llm_calls": 5.0,
-      "mean_prompt_tokens_est": 253.0,
-      "mean_completion_tokens_est": 127.0,
-      "mean_wall_time_sec": 11.853874444961548,
-      "runs": [
-        {
-          "dataset": "gsm8k",
-          "method": "BASELINE_NONE",
-          "seed": 0,
-          "train_acc": 0.0,
-          "test_acc": 0.0,
-          "wall_time_sec": 11.853874444961548,
-          "budget": {
-            "llm_calls": 5,
-            "prompt_chars": 1004,
-            "completion_chars": 502,
-            "prompt_tokens_est": 253,
-            "completion_tokens_est": 127
-          },
-          "best_x": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-          ],
-          "best_instruction_text": "",
-          "selected_demo_indices": []
-        }
-      ]
-    },
-    "RANDOM": {
-      "mean_train": 0.0,
-      "std_train": 0.0,
-      "mean_test": 0.0,
-      "std_test": 0.0,
-      "mean_llm_calls": 96.0,
-      "mean_prompt_tokens_est": 13854.0,
-      "mean_completion_tokens_est": 1022.0,
-      "mean_wall_time_sec": 226.97258067131042,
-      "runs": [
-        {
-          "dataset": "gsm8k",
-          "method": "RANDOM",
-          "seed": 0,
-          "train_acc": 0.0,
-          "test_acc": 0.0,
-          "wall_time_sec": 226.97258067131042,
-          "budget": {
-            "llm_calls": 96,
-            "prompt_chars": 55274,
-            "completion_chars": 3910,
-            "prompt_tokens_est": 13854,
-            "completion_tokens_est": 1022
-          },
-          "best_x": [
-            1,
-            1,
-            0,
-            1,
-            1,
-            1,
-            1,
-            1
-          ],
-          "best_instruction_text": "Task: Evaluate the given Boolean expression with constants True/False, operators NOT/AND/OR, and parentheses.\nOperator precedence is: NOT > AND > OR (unless parentheses override).\nOutput exactly one token: yes or no. No punctuation, no explanation.",
-          "selected_demo_indices": [
-            0,
-            1,
-            2,
-            3
-          ]
-        }
-      ]
-    },
-    "GREEDY": {
-      "mean_train": 0.0,
-      "std_train": 0.0,
-      "mean_test": 0.0,
-      "std_test": 0.0,
-      "mean_llm_calls": 37.0,
-      "mean_prompt_tokens_est": 2687.0,
-      "mean_completion_tokens_est": 596.0,
-      "mean_wall_time_sec": 90.74333643913269,
-      "runs": [
-        {
-          "dataset": "gsm8k",
-          "method": "GREEDY",
-          "seed": 0,
-          "train_acc": 0.0,
-          "test_acc": 0.0,
-          "wall_time_sec": 90.74333643913269,
-          "budget": {
-            "llm_calls": 37,
-            "prompt_chars": 10692,
-            "completion_chars": 2333,
-            "prompt_tokens_est": 2687,
-            "completion_tokens_est": 596
-          },
-          "best_x": [
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0
-          ],
-          "best_instruction_text": "",
-          "selected_demo_indices": []
-        }
-      ]
-    },
-    "SA+": {
-      "mean_train": 0.0,
-      "std_train": 0.0,
-      "mean_test": 0.0,
-      "std_test": 0.0,
-      "mean_llm_calls": 77.0,
-      "mean_prompt_tokens_est": 10127.0,
-      "mean_completion_tokens_est": 721.0,
-      "mean_wall_time_sec": 184.5283555984497,
-      "runs": [
-        {
-          "dataset": "gsm8k",
-          "method": "SA+",
-          "seed": 0,
-          "train_acc": 0.0,
-          "test_acc": 0.0,
-          "wall_time_sec": 184.5283555984497,
-          "budget": {
-            "llm_calls": 77,
-            "prompt_chars": 40394,
-            "completion_chars": 2729,
-            "prompt_tokens_est": 10127,
-            "completion_tokens_est": 721
-          },
-          "best_x": [
-            1,
-            1,
-            0,
-            1,
-            1,
-            1,
-            1,
-            1
-          ],
-          "best_instruction_text": "Task: Evaluate the given Boolean expression with constants True/False, operators NOT/AND/OR, and parentheses.\nOperator precedence is: NOT > AND > OR (unless parentheses override).\nOutput exactly one token: yes or no. No punctuation, no explanation.",
-          "selected_demo_indices": [
-            0,
-            1,
-            2,
-            3
-          ]
-        }
-      ]
-    },
-    "DE": {
-      "mean_train": 0.0,
-      "std_train": 0.0,
-      "mean_test": 0.0,
-      "std_test": 0.0,
-      "mean_llm_calls": 96.0,
-      "mean_prompt_tokens_est": 17246.0,
-      "mean_completion_tokens_est": 1022.0,
-      "mean_wall_time_sec": 223.61327385902405,
-      "runs": [
-        {
-          "dataset": "gsm8k",
-          "method": "DE",
-          "seed": 0,
-          "train_acc": 0.0,
-          "test_acc": 0.0,
-          "wall_time_sec": 223.61327385902405,
-          "budget": {
-            "llm_calls": 96,
-            "prompt_chars": 68838,
-            "completion_chars": 3912,
-            "prompt_tokens_est": 17246,
-            "completion_tokens_est": 1022
-          },
-          "best_x": [
-            1,
-            1,
-            0,
-            0,
-            1,
-            0,
-            1,
-            0
-          ],
-          "best_instruction_text": "Task: Evaluate the given Boolean expression with constants True/False, operators NOT/AND/OR, and parentheses.\nOperator precedence is: NOT > AND > OR (unless parentheses override).",
-          "selected_demo_indices": [
-            0,
-            2
-          ]
-        }
-      ]
-    },
-    "GWO": {
-      "mean_train": 0.0,
-      "std_train": 0.0,
-      "mean_test": 0.0,
-      "std_test": 0.0,
-      "mean_llm_calls": 81.0,
-      "mean_prompt_tokens_est": 14563.0,
-      "mean_completion_tokens_est": 849.0,
-      "mean_wall_time_sec": 192.4321494102478,
-      "runs": [
-        {
-          "dataset": "gsm8k",
-          "method": "GWO",
-          "seed": 0,
-          "train_acc": 0.0,
-          "test_acc": 0.0,
-          "wall_time_sec": 192.4321494102478,
-          "budget": {
-            "llm_calls": 81,
-            "prompt_chars": 58130,
-            "completion_chars": 3246,
-            "prompt_tokens_est": 14563,
-            "completion_tokens_est": 849
-          },
-          "best_x": [
-            1,
-            1,
-            0,
-            0,
-            1,
-            0,
-            1,
-            0
-          ],
-          "best_instruction_text": "Task: Evaluate the given Boolean expression with constants True/False, operators NOT/AND/OR, and parentheses.\nOperator precedence is: NOT > AND > OR (unless parentheses override).",
-          "selected_demo_indices": [
-            0,
-            2
-          ]
-        }
-      ]
-    },
-    "HYBRID_DE_SA": {
-      "mean_train": 0.0,
-      "std_train": 0.0,
-      "mean_test": 0.0,
-      "std_test": 0.0,
-      "mean_llm_calls": 96.0,
-      "mean_prompt_tokens_est": 19325.0,
-      "mean_completion_tokens_est": 710.0,
-      "mean_wall_time_sec": 228.62466096878052,
-      "runs": [
-        {
-          "dataset": "gsm8k",
-          "method": "HYBRID_DE_SA",
-          "seed": 0,
-          "train_acc": 0.0,
-          "test_acc": 0.0,
-          "wall_time_sec": 228.62466096878052,
-          "budget": {
-            "llm_calls": 96,
-            "prompt_chars": 77156,
-            "completion_chars": 2655,
-            "prompt_tokens_est": 19325,
-            "completion_tokens_est": 710
-          },
-          "best_x": [
-            1,
-            0,
-            1,
-            1,
-            1,
-            1,
-            1,
-            0
-          ],
-          "best_instruction_text": "Task: Evaluate the given Boolean expression with constants True/False, operators NOT/AND/OR, and parentheses.\nReturn yes if the expression evaluates to True, otherwise return no.\nOutput exactly one token: yes or no. No punctuation, no explanation.",
-          "selected_demo_indices": [
-            0,
-            1,
-            2
           ]
         }
       ]

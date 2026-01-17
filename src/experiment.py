@@ -114,6 +114,7 @@ class RunReport:
     best_x: List[int]
     best_instruction_text: str = ""
     selected_demo_indices: List[int] = None
+    curve: List[Tuple[int, float]] = None
 
 
 # -----------------------------
@@ -402,6 +403,7 @@ def run_budgeted_metaheuristic(
         best_x=[int(b) for b in best_x],
         best_instruction_text=build_prompt(blocks, best_x[:n_blocks]),
         selected_demo_indices=selected_demos,
+        curve=evaluator.curve,
     )
 
 
@@ -481,11 +483,13 @@ def main() -> None:
     parser.add_argument("--research", action="store_true", help="Run in full research mode")
     parser.add_argument("--balanced", action="store_true", help="Run in balanced mode (middle ground)")
     parser.add_argument("--max_data", type=int, default=None, help="Limit number of items per dataset")
+    parser.add_argument("--seeds", type=str, default=None, help="Comma-separated seeds, e.g., '3,4' to override mode defaults")
     args = parser.parse_args()
 
     use_fast = args.fast
     use_balanced = args.balanced
     max_data = args.max_data
+    override_seeds = [int(s.strip()) for s in args.seeds.split(",")] if args.seeds else None
     
     if use_fast:
         print(">>> FAST MODE: 1 seed, max_data=10, budget=100. <<<")
@@ -529,6 +533,8 @@ def main() -> None:
             "hybrid_de": 20,
             "hybrid_sa": 40,
         }
+    if override_seeds:
+        RUN_CFG["seeds"] = override_seeds
 
     # Override max_data if manually provided
     if max_data is not None:
@@ -536,8 +542,8 @@ def main() -> None:
 
     dataset_list = [
         #("arithmetic", "data/arithmetic.jsonl"),
-        # ("logic", "data/bbh_boolean_expressions.jsonl"),
-        ("gsm8k", "data/gsm8k_sample.jsonl"),
+        ("logic", "data/bbh_boolean_expressions.jsonl"),
+        # ("gsm8k", "data/gsm8k_sample.jsonl"),
     ]
     
     # In fast mode, maybe only run one dataset? Let's run both but quickly.
@@ -708,7 +714,7 @@ def main() -> None:
                 )
                 rep.dataset = ds_name
                 reports.append(rep)
-                per_seed_curves.append([(rep.budget.llm_calls, rep.test_acc)])
+                per_seed_curves.append(rep.curve)
 
                 print(
                     f"  Seed {s}: Train={rep.train_acc:.3f} Test={rep.test_acc:.3f} "
