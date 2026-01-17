@@ -12,8 +12,8 @@ class LLMConfig:
     model_name: str = LOCKED_MODEL_NAME
     base_url: str = "http://localhost:11434"
     temperature: float = 0.0
-    num_predict: int = 64
-    num_ctx: int = 512
+    num_predict: int = 512
+    num_ctx: int = 1024
     timeout_s: int = 60
 
 class OllamaLLM:
@@ -42,7 +42,6 @@ class OllamaLLM:
                 "num_predict": self.cfg.num_predict,
                 "num_ctx": self.cfg.num_ctx,
                 "num_gpu": 99,
-                "stop": ["\n"]
             },
         }
 

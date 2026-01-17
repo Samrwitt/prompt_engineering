@@ -1,7 +1,7 @@
 {
   "logic": {
     "dspy_miprov2": {
-      "wall_time_sec": 9.161596298217773,
+      "wall_time_sec": 11.089471578598022,
       "llm_calls": null,
       "tokens_in_est": null,
       "tokens_out_est": null,
@@ -10,7 +10,7 @@
   },
   "gsm8k": {
     "dspy_miprov2": {
-      "wall_time_sec": 104.16886258125305,
+      "wall_time_sec": 0.3175790309906006,
       "llm_calls": null,
       "tokens_in_est": null,
       "tokens_out_est": null,

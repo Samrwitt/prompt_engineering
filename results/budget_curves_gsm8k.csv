@@ -1,10 +1,9 @@
 dataset,method,llm_calls,best_acc
 gsm8k,BASELINE_ALL,5,0.0
 gsm8k,BASELINE_NONE,5,0.0
-gsm8k,RANDOM,50,0.0
-gsm8k,GREEDY,50,0.0
-gsm8k,HILL_CLIMB,50,0.0
-gsm8k,SA+,50,0.0
-gsm8k,DE,50,0.0
-gsm8k,GWO,50,0.0
-gsm8k,HYBRID_DE_SA,50,0.0
+gsm8k,RANDOM,96,0.0
+gsm8k,GREEDY,37,0.0
+gsm8k,SA+,77,0.0
+gsm8k,DE,96,0.0
+gsm8k,GWO,81,0.0
+gsm8k,HYBRID_DE_SA,96,0.0

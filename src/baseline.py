@@ -29,16 +29,17 @@ def _norm_yesno(s: str) -> str:
 
 def _extract_int_strict(s: str) -> str:
     """
-    Return an integer string if (and only if) we can extract a valid integer.
-    Prefer a strict full-match; fallback to first integer token found.
+    Extract the final answer from text. 
+    Looks for 'answer: X' or takes the last number in the text.
     """
-    s = (s or "").strip()
-    if _INT_RE.match(s):
-        return s
-
-    # fallback: first integer token in text
-    m = re.search(r"-?\d+", s)
-    return m.group(0) if m else ""
+    s = (s or "").strip().lower().replace(",", "")
+    # Look for 'answer: X'
+    m = re.search(r"answer[^0-9-]*(-?\d+)", s)
+    if m:
+        return m.group(1)
+    # Fallback: take the last integer found
+    nums = re.findall(r"-?\d+", s)
+    return nums[-1] if nums else ""
 
 def _is_valid_answer(answer_type: str, s: str) -> bool:
     if answer_type == "yesno":
@@ -135,11 +136,11 @@ def run_dspy_miprov2_baseline(
     # ---- SIGNATURES with strict output requirements ----
     class NumberQA(dspy.Signature):
         question = dspy.InputField(desc="Problem statement.")
-        answer = dspy.OutputField(desc="Return ONLY one integer (may be negative). No words, no punctuation.")
+        answer = dspy.OutputField(desc="Reason step-by-step, then output the final answer as exactly one integer (e.g., 42).")
 
     class YesNoQA(dspy.Signature):
         question = dspy.InputField(desc="Logical statement to evaluate.")
-        answer = dspy.OutputField(desc="Return ONLY: yes or no. No other tokens.")
+        answer = dspy.OutputField(desc="Reason step-by-step, then output exactly: yes or no.")
 
     signature = YesNoQA if answer_type == "yesno" else NumberQA
     program = dspy.Predict(signature)
@@ -177,8 +178,8 @@ def run_dspy_miprov2_baseline(
                 )
             else:
                 reminder = (
-                    "IMPORTANT: Output must be exactly one integer token (e.g., -10, 42).\n"
-                    "Do not explain.\n\n"
+                    "IMPORTANT: Please provide your reasoning first, then conclude with the final integer.\n"
+                    "The last number in your response should be the answer.\n\n"
                 )
         return pred  # last attempt (may be invalid; metric will score 0)
 

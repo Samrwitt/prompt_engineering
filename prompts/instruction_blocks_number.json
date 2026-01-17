@@ -1,7 +1,7 @@
 [
   "You are a careful mathematician. Solve the problem correctly.",
-  "Do the computation internally.",
-  "Output format MUST be exactly: Answer: <integer>",
-  "Output ONLY one integer after 'Answer:' (no other numbers, no units, no commas).",
-  "Do not use scientific notation."
+  "Let's think step by step to solve the problem.",
+  "Show your reasoning clearly, then provide the final result.",
+  "Format your final answer as: Answer: <integer>",
+  "Ensure the last number in your output is the final answer."
 ]

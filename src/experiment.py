@@ -536,7 +536,7 @@ def main() -> None:
 
     dataset_list = [
         #("arithmetic", "data/arithmetic.jsonl"),
-        ("logic", "data/bbh_boolean_expressions.jsonl"),
+        # ("logic", "data/bbh_boolean_expressions.jsonl"),
         ("gsm8k", "data/gsm8k_sample.jsonl"),
     ]
     
@@ -561,7 +561,7 @@ def main() -> None:
         print(f"Running on Dataset: {ds_name} | Mode: {'FAST' if use_fast else 'RESEARCH'}")
         print("==========================================")
 
-        if ds_name in ("toy_math", "arithmetic"):
+        if ds_name in ("toy_math", "arithmetic", "gsm8k"):
             answer_type = "number"
             blocks_path = "prompts/instruction_blocks_number.json"
         else:
