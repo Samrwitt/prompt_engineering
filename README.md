@@ -1,6 +1,6 @@
 Prompt Optimization Using Metaheuristics
 
-This project presents a framework for optimizing LLM prompts—comprising instructions and few-shot examples—through metaheuristic methods such as Simulated Annealing, Differential Evolution, and Grey Wolf Optimizer (GWO). The performance of these methods is evaluated in comparison with DSPy and standard baseline approaches.
+This project presents a framework for optimizing LLM prompts—comprising instructions and few-shot examples, through metaheuristic methods such as Simulated Annealing, Differential Evolution, and Grey Wolf Optimizer (GWO). The performance of these methods is evaluated in comparison with DSPy and standard baseline approaches.
 
 Setup
 
