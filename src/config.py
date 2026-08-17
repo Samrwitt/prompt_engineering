@@ -7,23 +7,46 @@ from typing import Any, Dict, List, Optional, Tuple
 
 PRESETS: Dict[str, Dict[str, Any]] = {
     "fast": {
-        "max_llm_calls": 100,
-        "fast_k": 5,
+        "max_llm_calls": 80,
+        "fast_k": 6,
         "seeds": [0],
-        "max_data": 10,
-        "sa_iters": 20,
+        "max_data": 20,
+        "train_ratio": 0.5,
+        "demo_pool_size": 8,
+        "sa_iters": 12,
         "pop_size": 8,
-        "de_iters": 10,
-        "gwo_iters": 10,
-        "hybrid_de": 10,
-        "hybrid_sa": 10,
+        "de_iters": 6,
+        "gwo_iters": 6,
+        "hybrid_de": 4,
+        "hybrid_sa": 8,
         "datasets": ["logic"],
+        "backend": "mock",
+        "skip_dspy": True,
+    },
+    "portfolio": {
+        "max_llm_calls": 220,
+        "fast_k": 16,
+        "seeds": [0, 1, 2, 3, 4],
+        "max_data": 100,
+        "train_ratio": 0.5,
+        "demo_pool_size": 16,
+        "sa_iters": 28,
+        "pop_size": 12,
+        "de_iters": 12,
+        "gwo_iters": 12,
+        "hybrid_de": 8,
+        "hybrid_sa": 16,
+        "datasets": ["logic", "arithmetic"],
+        "backend": "mock",
+        "skip_dspy": True,
     },
     "balanced": {
         "max_llm_calls": 300,
         "fast_k": 10,
         "seeds": [0, 1, 2],
-        "max_data": 20,
+        "max_data": 40,
+        "train_ratio": 0.7,
+        "demo_pool_size": 12,
         "sa_iters": 30,
         "pop_size": 12,
         "de_iters": 15,
@@ -31,12 +54,16 @@ PRESETS: Dict[str, Dict[str, Any]] = {
         "hybrid_de": 10,
         "hybrid_sa": 20,
         "datasets": ["logic", "arithmetic"],
+        "backend": "ollama",
+        "skip_dspy": False,
     },
     "research": {
         "max_llm_calls": 1000,
         "fast_k": 20,
         "seeds": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
         "max_data": 100,
+        "train_ratio": 0.5,
+        "demo_pool_size": 16,
         "sa_iters": 40,
         "pop_size": 20,
         "de_iters": 30,
@@ -44,6 +71,8 @@ PRESETS: Dict[str, Dict[str, Any]] = {
         "hybrid_de": 20,
         "hybrid_sa": 40,
         "datasets": ["logic", "arithmetic", "gsm8k"],
+        "backend": "ollama",
+        "skip_dspy": False,
     },
 }
 
@@ -52,13 +81,13 @@ DATASET_CATALOG: Dict[str, Dict[str, str]] = {
         "path": "data/bbh_boolean_expressions.jsonl",
         "answer_type": "yesno",
         "blocks": "prompts/instruction_blocks_yesno.json",
-        "label": "BBH Boolean Expressions",
+        "label": "Boolean expressions (100 items)",
     },
     "arithmetic": {
         "path": "data/arithmetic.jsonl",
         "answer_type": "number",
         "blocks": "prompts/instruction_blocks_number.json",
-        "label": "Arithmetic Word Problems",
+        "label": "Arithmetic (100 items)",
     },
     "gsm8k": {
         "path": "data/gsm8k_sample.jsonl",
@@ -72,16 +101,18 @@ DATASET_CATALOG: Dict[str, Dict[str, str]] = {
 @dataclass
 class RunConfig:
     name: str = "fast"
-    max_llm_calls: int = 100
-    fast_k: int = 5
+    max_llm_calls: int = 80
+    fast_k: int = 6
     seeds: List[int] = field(default_factory=lambda: [0])
-    max_data: Optional[int] = 10
-    sa_iters: int = 20
+    max_data: Optional[int] = 20
+    train_ratio: float = 0.5
+    demo_pool_size: int = 8
+    sa_iters: int = 12
     pop_size: int = 8
-    de_iters: int = 10
-    gwo_iters: int = 10
-    hybrid_de: int = 10
-    hybrid_sa: int = 10
+    de_iters: int = 6
+    gwo_iters: int = 6
+    hybrid_de: int = 4
+    hybrid_sa: int = 8
     datasets: List[str] = field(default_factory=lambda: ["logic"])
     backend: str = "mock"
     skip_dspy: bool = True

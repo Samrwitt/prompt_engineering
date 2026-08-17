@@ -1,10 +1,19 @@
-.PHONY: test plots demo dashboard experiment-mock experiment-ollama
+.PHONY: test plots demo dashboard experiment-mock portfolio site data
 
 test:
 	python -m pytest
 
+data:
+	python -m src data
+
+portfolio:
+	python -m src experiment --portfolio
+
 plots:
 	python -m src plots
+
+site:
+	python -m src site
 
 demo:
 	python -m src.demo

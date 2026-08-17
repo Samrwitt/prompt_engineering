@@ -230,38 +230,43 @@ def plot_budget_scatter(df: pd.DataFrame, out_path: Path, dataset: str = "logic"
     plt.close(fig)
 
 
-def generate_all(results_dir: Path | None = None, figures_dir: Path | None = None) -> List[Path]:
+def generate_all(
+    results_dir: Path | None = None,
+    figures_dir: Path | None = None,
+    suffix: str = "",
+) -> List[Path]:
     root = _project_root()
     df = load_runs(results_dir)
-    if df.empty:
-        print("No runs found. Run: python -m src experiment --fast")
+    scores = load_final_scores(results_dir)
+    if df.empty and not scores:
+        print("No runs found. Run: python -m src experiment --portfolio")
         return []
     figures_dir = figures_dir or (root / "docs" / "figures")
     figures_dir.mkdir(parents=True, exist_ok=True)
-    scores = load_final_scores(results_dir)
     written: List[Path] = []
-    datasets = sorted(set(df["dataset"].dropna().unique()) | set(scores.keys()))
+    datasets = sorted(set(df["dataset"].dropna().unique() if not df.empty else []) | set(scores.keys()))
     for ds in datasets:
-        bars = figures_dir / f"accuracy_{ds}.png"
-        conv = figures_dir / f"convergence_{ds}.png"
-        scat = figures_dir / f"budget_{ds}.png"
+        bars = figures_dir / f"accuracy_{ds}{suffix}.png"
+        conv = figures_dir / f"convergence_{ds}{suffix}.png"
+        scat = figures_dir / f"budget_{ds}{suffix}.png"
         plot_accuracy_bars(df, bars, ds, scores=scores)
         max_calls = 100
         try:
-            max_calls = int(
-                max(
-                    (row.get("budget") or {}).get("llm_calls", 0)
-                    for _, row in df[df["dataset"] == ds].iterrows()
-                    if isinstance(row.get("budget"), dict)
+            if not df.empty:
+                max_calls = int(
+                    max(
+                        (row.get("budget") or {}).get("llm_calls", 0)
+                        for _, row in df[df["dataset"] == ds].iterrows()
+                        if isinstance(row.get("budget"), dict)
+                    )
+                    or 100
                 )
-                or 100
-            )
         except Exception:
             max_calls = 100
-        plot_convergence(df, conv, ds, max_budget=min(max(max_calls, 20), 120))
+        plot_convergence(df, conv, ds, max_budget=min(max(max_calls, 20), 220))
         plot_budget_scatter(df, scat, ds)
         written.extend([bars, conv, scat])
-        print(f"Wrote figures for {ds}")
+        print(f"Wrote figures for {ds}{suffix}")
     print(f"Figures saved under {figures_dir}")
     return written
 

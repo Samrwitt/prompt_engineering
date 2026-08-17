@@ -5,7 +5,7 @@ from src.experiment import config_from_args, parse_args
 def test_fast_preset_defaults_to_mock():
     cfg = load_run_config("fast")
     assert cfg.backend == "mock"
-    assert cfg.max_llm_calls == 100
+    assert cfg.max_llm_calls == 80
     assert "logic" in cfg.datasets
 
 
@@ -15,6 +15,16 @@ def test_cli_fast_flag():
     assert cfg.name == "fast"
     assert cfg.backend == "mock"
     assert cfg.datasets == ["logic"]
+
+
+def test_cli_portfolio_preset():
+    args = parse_args(["--portfolio"])
+    cfg = config_from_args(args)
+    assert cfg.name == "portfolio"
+    assert cfg.backend == "mock"
+    assert cfg.train_ratio == 0.5
+    assert len(cfg.seeds) == 5
+    assert cfg.results_dir == "results/benchmark_mock"
 
 
 def test_cli_balanced_seeds():

@@ -1,0 +1,2 @@
+# Optional: local Llama 3.2 baseline via DSPy
+dspy-ai

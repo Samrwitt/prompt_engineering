@@ -15,5 +15,6 @@ models/
 *.pt
 *.bin
 *.safetensors
+pytest-cache-files-*/
 results/mock_smoke/
 results/demo_scores.json

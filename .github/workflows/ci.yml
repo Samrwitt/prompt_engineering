@@ -19,5 +19,7 @@ jobs:
           pip install numpy scipy pandas pytest pyyaml matplotlib tqdm requests
       - name: Run tests
         run: python -m pytest
+      - name: Fast mock experiment
+        run: python -m src experiment --fast --backend mock --results-dir /tmp/pe-fast
       - name: CLI help
         run: python -m src --help

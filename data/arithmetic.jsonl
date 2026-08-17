@@ -1,34 +1,100 @@
-{"q":"John had 18 marbles and lost 78 more than he owned. What is his final number of marbles?","a":"-60"}
-{"q":"A number increased by 26 becomes 120. What was the original number?","a":"94"}
-{"q":"If you subtract 31 from 80, what do you get?","a":"49"}
-{"q":"Emma owed 87 dollars but had only 77. What is her net balance?","a":"-10"}
-{"q":"What number must you subtract from 37 to get -42?","a":"79"}
-{"q":"A box contained 49 items. After adding 61 more, how many are there now?","a":"110"}
-{"q":"What is the result of subtracting 76 from 66?","a":"-10"}
-{"q":"A temperature was 25°C and dropped by 41 degrees. What is the new temperature?","a":"-16"}
-{"q":"What is the sum of 18 and 53?","a":"71"}
-{"q":"A warehouse had 85 units and received 80 more. How many units are there?","a":"165"}
-
-{"q":"What number added to 38 equals 123?","a":"85"}
-{"q":"If 19 is added to a number and the result is 109, what was the number?","a":"90"}
-{"q":"Calculate the total when 39 items are combined with 18 more.","a":"57"}
-{"q":"A number plus 19 equals 71. Find the number.","a":"52"}
-{"q":"What is the total after adding 95 to 45?","a":"140"}
-
-{"q":"A balance of 37 decreases to -42. By how much did it change?","a":"-79"}
-{"q":"If you double 83, what is the result?","a":"166"}
-{"q":"What is the difference between 41 and 70?","a":"-29"}
-{"q":"A value of 34 is reduced by 22. What remains?","a":"12"}
-{"q":"What is the total when 94 and 65 are combined?","a":"159"}
-
-{"q":"What is left if 62 is subtracted from 64?","a":"2"}
-{"q":"A temperature of 16°C drops by 96 degrees. What is the final temperature?","a":"-80"}
-{"q":"What number plus 61 equals 78?","a":"17"}
-{"q":"What do you get when 41 is subtracted from 23?","a":"-18"}
-{"q":"Calculate the sum of 34 and 78.","a":"112"}
-
-{"q":"A quantity of 27 decreases by 64. What is the result?","a":"-37"}
-{"q":"What is the result of adding 69 to 45?","a":"114"}
-{"q":"If a number plus 66 equals 85, find the number.","a":"19"}
-{"q":"What is the total when 16 and 93 are added?","a":"109"}
-{"q":"What is the sum of 21 and 40?","a":"61"}
+{"q": "What is 13 + 45?", "a": "58"}
+{"q": "What is 27 * 23?", "a": "621"}
+{"q": "What is 85 + 64?", "a": "149"}
+{"q": "What is 21 + 37?", "a": "58"}
+{"q": "What is 81 * 35?", "a": "2835"}
+{"q": "What is 38 times 67?", "a": "2546"}
+{"q": "What is 10 * 30?", "a": "300"}
+{"q": "A box had 53 items. After adding 45 more, how many are there now?", "a": "98"}
+{"q": "What is 53 + 23?", "a": "76"}
+{"q": "What is the result of subtracting 55 from 22?", "a": "-33"}
+{"q": "What is 15 * 68?", "a": "1020"}
+{"q": "What is 58 * 20?", "a": "1160"}
+{"q": "What is 90 - 89?", "a": "1"}
+{"q": "What is 18 * 15?", "a": "270"}
+{"q": "What is 47 + 20?", "a": "67"}
+{"q": "What is 58 - 45?", "a": "13"}
+{"q": "What is 30 - 57?", "a": "-27"}
+{"q": "What is 95 * 44?", "a": "4180"}
+{"q": "What is 87 + 91?", "a": "178"}
+{"q": "What is 30 - 69?", "a": "-39"}
+{"q": "What is 91 * 98?", "a": "8918"}
+{"q": "What is 97 + 51?", "a": "148"}
+{"q": "What is 14 - 50?", "a": "-36"}
+{"q": "What is 18 * 37?", "a": "666"}
+{"q": "What is 37 - 93?", "a": "-56"}
+{"q": "A box had 92 items. After adding 68 more, how many are there now?", "a": "160"}
+{"q": "What is 27 * 41?", "a": "1107"}
+{"q": "What is 84 * 64?", "a": "5376"}
+{"q": "A box had 56 items. After adding 38 more, how many are there now?", "a": "94"}
+{"q": "A box had 21 items. After adding 16 more, how many are there now?", "a": "37"}
+{"q": "What is 90 * 30?", "a": "2700"}
+{"q": "What is the result of subtracting 18 from 86?", "a": "68"}
+{"q": "What is 86 times 69?", "a": "5934"}
+{"q": "What is 80 * 11?", "a": "880"}
+{"q": "What is 97 - 78?", "a": "19"}
+{"q": "What is 24 - 47?", "a": "-23"}
+{"q": "What is 68 * 10?", "a": "680"}
+{"q": "What is 74 * 32?", "a": "2368"}
+{"q": "What is 90 * 48?", "a": "4320"}
+{"q": "What is 29 + 57?", "a": "86"}
+{"q": "What is 86 - 51?", "a": "35"}
+{"q": "What is 24 - 56?", "a": "-32"}
+{"q": "What is 17 * 40?", "a": "680"}
+{"q": "What is 20 + 72?", "a": "92"}
+{"q": "What is 26 - 94?", "a": "-68"}
+{"q": "What is 43 * 77?", "a": "3311"}
+{"q": "What is 37 times 79?", "a": "2923"}
+{"q": "What is 49 * 61?", "a": "2989"}
+{"q": "What is 66 - 76?", "a": "-10"}
+{"q": "What is 41 + 38?", "a": "79"}
+{"q": "What is 12 * 85?", "a": "1020"}
+{"q": "What is 85 + 38?", "a": "123"}
+{"q": "What is 90 + 17?", "a": "107"}
+{"q": "What is 14 + 52?", "a": "66"}
+{"q": "What is 45 - 95?", "a": "-50"}
+{"q": "What is 79 * 26?", "a": "2054"}
+{"q": "What is the result of subtracting 70 from 41?", "a": "-29"}
+{"q": "What is 22 * 22?", "a": "484"}
+{"q": "What is the result of subtracting 64 from 55?", "a": "-9"}
+{"q": "What is 16 times 96?", "a": "1536"}
+{"q": "What is 17 * 61?", "a": "1037"}
+{"q": "What is 23 + 41?", "a": "64"}
+{"q": "What is 78 + 67?", "a": "145"}
+{"q": "What is the result of subtracting 45 from 33?", "a": "-12"}
+{"q": "What is 19 * 66?", "a": "1254"}
+{"q": "What is 16 * 93?", "a": "1488"}
+{"q": "What is 21 + 40?", "a": "61"}
+{"q": "A box had 72 items. After adding 71 more, how many are there now?", "a": "143"}
+{"q": "What is the result of subtracting 31 from 17?", "a": "-14"}
+{"q": "What is 59 - 43?", "a": "16"}
+{"q": "What is 64 * 99?", "a": "6336"}
+{"q": "What is the result of subtracting 34 from 29?", "a": "-5"}
+{"q": "What is 17 * 84?", "a": "1428"}
+{"q": "What is 50 + 17?", "a": "67"}
+{"q": "A box had 74 items. After adding 77 more, how many are there now?", "a": "151"}
+{"q": "What is 75 + 20?", "a": "95"}
+{"q": "What is 86 * 18?", "a": "1548"}
+{"q": "What is 61 * 25?", "a": "1525"}
+{"q": "What is 84 + 86?", "a": "170"}
+{"q": "What is 63 * 94?", "a": "5922"}
+{"q": "What is 43 * 36?", "a": "1548"}
+{"q": "What is 40 - 43?", "a": "-3"}
+{"q": "What is 95 - 92?", "a": "3"}
+{"q": "A box had 50 items. After adding 19 more, how many are there now?", "a": "69"}
+{"q": "A box had 89 items. After adding 82 more, how many are there now?", "a": "171"}
+{"q": "What is 78 * 37?", "a": "2886"}
+{"q": "What is 26 + 54?", "a": "80"}
+{"q": "What is 57 + 46?", "a": "103"}
+{"q": "What is 79 times 48?", "a": "3792"}
+{"q": "What is 95 - 80?", "a": "15"}
+{"q": "What is 27 + 43?", "a": "70"}
+{"q": "What is 80 - 29?", "a": "51"}
+{"q": "What is 87 * 36?", "a": "3132"}
+{"q": "What is 36 * 97?", "a": "3492"}
+{"q": "What is 74 - 72?", "a": "2"}
+{"q": "What is 21 - 91?", "a": "-70"}
+{"q": "What is 15 - 10?", "a": "5"}
+{"q": "What is 91 + 43?", "a": "134"}
+{"q": "What is 80 times 64?", "a": "5120"}
+{"q": "What is 24 * 19?", "a": "456"}

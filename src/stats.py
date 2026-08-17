@@ -68,8 +68,9 @@ def run_stats(runs_path: str = "results/runs.jsonl") -> Dict[str, Any]:
             sig_data[m] = stats
         results[ds] = {"baseline": baseline, "tests": sig_data}
 
-    Path("results/significance.json").write_text(json.dumps(results, indent=2))
-    print("\nWrote results/significance.json")
+    out = Path(runs_path).with_name("significance.json")
+    out.write_text(json.dumps(results, indent=2))
+    print(f"\nWrote {out}")
     return results
 
 

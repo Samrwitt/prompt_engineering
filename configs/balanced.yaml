@@ -1,9 +1,10 @@
-# Recommended local run: 3 seeds, two datasets.
 name: balanced
 max_llm_calls: 300
 fast_k: 10
 seeds: [0, 1, 2]
-max_data: 20
+max_data: 40
+train_ratio: 0.7
+demo_pool_size: 12
 sa_iters: 30
 pop_size: 12
 de_iters: 15

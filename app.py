@@ -23,6 +23,9 @@ from src.experiment import EvalConfig, run_budgeted_metaheuristic
 
 @st.cache_data(show_spinner=False)
 def _runs_df() -> pd.DataFrame:
+    mock = ROOT / "results" / "benchmark_mock"
+    if (mock / "runs.jsonl").exists():
+        return load_runs(mock)
     return load_runs(ROOT / "results")
 
 

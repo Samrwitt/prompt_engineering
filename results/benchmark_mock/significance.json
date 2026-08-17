@@ -1,0 +1,92 @@
+{
+  "arithmetic": {
+    "baseline": "BASELINE_ALL",
+    "tests": {
+      "BASELINE_NONE": {
+        "p_value": 1.0,
+        "significant": false,
+        "n": 5
+      },
+      "DE": {
+        "p_value": 0.03125,
+        "significant": true,
+        "n": 5
+      },
+      "GREEDY": {
+        "p_value": 1.0,
+        "significant": false,
+        "n": 5
+      },
+      "GWO": {
+        "p_value": 0.03125,
+        "significant": true,
+        "n": 5
+      },
+      "HILL_CLIMB": {
+        "p_value": 0.125,
+        "significant": false,
+        "n": 5
+      },
+      "HYBRID_DE_SA": {
+        "p_value": 0.03125,
+        "significant": true,
+        "n": 5
+      },
+      "RANDOM": {
+        "p_value": 0.03125,
+        "significant": true,
+        "n": 5
+      },
+      "SA+": {
+        "p_value": 0.0625,
+        "significant": false,
+        "n": 5
+      }
+    }
+  },
+  "logic": {
+    "baseline": "BASELINE_ALL",
+    "tests": {
+      "BASELINE_NONE": {
+        "p_value": 1.0,
+        "significant": false,
+        "n": 5
+      },
+      "DE": {
+        "p_value": 0.03125,
+        "significant": true,
+        "n": 5
+      },
+      "GREEDY": {
+        "p_value": 0.75,
+        "significant": false,
+        "n": 5
+      },
+      "GWO": {
+        "p_value": 0.03125,
+        "significant": true,
+        "n": 5
+      },
+      "HILL_CLIMB": {
+        "p_value": 0.28125,
+        "significant": false,
+        "n": 5
+      },
+      "HYBRID_DE_SA": {
+        "p_value": 0.03125,
+        "significant": true,
+        "n": 5
+      },
+      "RANDOM": {
+        "p_value": 0.0625,
+        "significant": false,
+        "n": 5
+      },
+      "SA+": {
+        "p_value": 0.6875,
+        "significant": false,
+        "n": 5
+      }
+    }
+  }
+}

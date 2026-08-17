@@ -1,0 +1,19 @@
+name: portfolio
+max_llm_calls: 220
+fast_k: 16
+seeds: [0, 1, 2, 3, 4]
+max_data: 100
+train_ratio: 0.5
+demo_pool_size: 16
+sa_iters: 28
+pop_size: 12
+de_iters: 12
+gwo_iters: 12
+hybrid_de: 8
+hybrid_sa: 16
+datasets: [logic, arithmetic]
+backend: mock
+skip_dspy: true
+max_demos: 5
+early_stop: true
+results_dir: results/benchmark_mock

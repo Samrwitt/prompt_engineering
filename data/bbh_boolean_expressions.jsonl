@@ -8,8 +8,93 @@
 {"q": "Evaluate: NOT True OR NOT False AND True OR False.", "a": "yes"}
 {"q": "Evaluate: ((True OR False) AND NOT False) OR False.", "a": "yes"}
 {"q": "Evaluate: NOT (False AND NOT True OR True) AND True.", "a": "no"}
-{"q": "Evaluate: True OR (False AND True) OR (NOT True AND False).", "a": "yes"}
-{"q": "Evaluate: (False OR True) AND NOT (True AND False).", "a": "yes"}
-{"q": "Evaluate: NOT True AND NOT False OR True AND False.", "a": "no"}
-{"q": "Evaluate: (NOT False OR False) AND True AND NOT True.", "a": "no"}
-{"q": "Evaluate: True AND (False OR NOT False) AND True.", "a": "yes"}
+{"q": "Evaluate: (True) AND (NOT True).", "a": "no"}
+{"q": "Evaluate: ((NOT (True) AND (NOT True)) AND ((True) OR (NOT False))) AND (((True) AND (NOT False)) AND ((NOT False) OR (NOT False))).", "a": "no"}
+{"q": "Evaluate: (NOT (True) AND (False)) OR ((True) AND (True)).", "a": "yes"}
+{"q": "Evaluate: ((NOT True) AND (True)) AND (NOT (True) OR (NOT True)).", "a": "no"}
+{"q": "Evaluate: NOT (True) AND (False).", "a": "no"}
+{"q": "Evaluate: ((NOT (NOT False) OR (NOT False)) OR ((NOT True) OR (False))) AND ((NOT (True) AND (True)) OR ((True) OR (False))).", "a": "yes"}
+{"q": "Evaluate: NOT (False) OR (NOT False).", "a": "yes"}
+{"q": "Evaluate: (False) AND (True).", "a": "no"}
+{"q": "Evaluate: ((NOT True) AND (True)) AND (NOT (NOT False) OR (False)).", "a": "no"}
+{"q": "Evaluate: NOT (True) AND (True).", "a": "no"}
+{"q": "Evaluate: NOT ((NOT True) AND (False)) AND (NOT (False) OR (False)).", "a": "yes"}
+{"q": "Evaluate: NOT (True) AND (NOT True).", "a": "no"}
+{"q": "Evaluate: NOT (NOT False) OR (NOT True).", "a": "no"}
+{"q": "Evaluate: NOT (NOT False) AND (False).", "a": "no"}
+{"q": "Evaluate: ((False) AND (False)) AND (NOT (NOT True) AND (False)).", "a": "no"}
+{"q": "Evaluate: (NOT False) AND (NOT False).", "a": "yes"}
+{"q": "Evaluate: NOT (NOT (NOT (NOT True) AND (True)) OR ((False) AND (False))) AND ((NOT (NOT False) OR (NOT False)) OR (NOT (True) AND (True))).", "a": "yes"}
+{"q": "Evaluate: (((True) AND (True)) OR ((True) OR (True))) AND ((NOT (True) OR (NOT False)) AND (NOT (False) AND (NOT True))).", "a": "no"}
+{"q": "Evaluate: (NOT True) OR (True).", "a": "yes"}
+{"q": "Evaluate: NOT (((True) AND (False)) AND (NOT (NOT True) AND (True))) OR (((True) OR (False)) AND (NOT (NOT True) AND (False))).", "a": "yes"}
+{"q": "Evaluate: ((False) AND (NOT True)) AND ((False) AND (True)).", "a": "no"}
+{"q": "Evaluate: (True) OR (False).", "a": "yes"}
+{"q": "Evaluate: NOT ((False) AND (NOT True)) AND ((True) OR (NOT True)).", "a": "yes"}
+{"q": "Evaluate: (NOT False) OR (True).", "a": "yes"}
+{"q": "Evaluate: (((False) AND (False)) OR ((NOT False) OR (NOT False))) OR ((NOT (NOT True) OR (NOT True)) AND ((NOT True) OR (True))).", "a": "yes"}
+{"q": "Evaluate: ((False) AND (False)) AND ((False) OR (True)).", "a": "no"}
+{"q": "Evaluate: (False) OR (False).", "a": "no"}
+{"q": "Evaluate: NOT (NOT ((False) OR (True)) AND ((NOT False) AND (True))) AND (((True) AND (True)) AND ((False) AND (NOT True))).", "a": "no"}
+{"q": "Evaluate: (((NOT False) AND (True)) OR ((False) OR (False))) OR (NOT ((False) AND (False)) OR ((False) OR (False))).", "a": "yes"}
+{"q": "Evaluate: (((NOT True) AND (NOT True)) OR (NOT (True) OR (False))) AND ((NOT (True) OR (False)) OR ((False) AND (False))).", "a": "no"}
+{"q": "Evaluate: ((True) AND (True)) OR (NOT (NOT True) OR (NOT False)).", "a": "yes"}
+{"q": "Evaluate: NOT (NOT False) OR (NOT False).", "a": "yes"}
+{"q": "Evaluate: NOT (NOT False) OR (True).", "a": "yes"}
+{"q": "Evaluate: (True) AND (True).", "a": "yes"}
+{"q": "Evaluate: NOT ((NOT False) AND (True)) AND ((True) OR (False)).", "a": "no"}
+{"q": "Evaluate: (True) AND (False).", "a": "no"}
+{"q": "Evaluate: NOT (((NOT True) AND (False)) OR ((NOT False) AND (False))) OR (NOT ((False) OR (NOT False)) AND ((False) AND (NOT False))).", "a": "yes"}
+{"q": "Evaluate: NOT ((NOT False) AND (False)) AND ((False) OR (NOT False)).", "a": "yes"}
+{"q": "Evaluate: ((False) OR (True)) OR ((NOT True) AND (True)).", "a": "yes"}
+{"q": "Evaluate: NOT (NOT (NOT (False) OR (NOT False)) OR (NOT (NOT False) AND (NOT True))) OR ((NOT (False) OR (NOT True)) AND ((True) AND (NOT True))).", "a": "yes"}
+{"q": "Evaluate: NOT (False) AND (NOT False).", "a": "yes"}
+{"q": "Evaluate: (NOT (True) AND (False)) AND ((NOT False) OR (NOT True)).", "a": "no"}
+{"q": "Evaluate: ((False) OR (False)) OR ((True) AND (True)).", "a": "yes"}
+{"q": "Evaluate: (NOT True) OR (NOT True).", "a": "no"}
+{"q": "Evaluate: (((NOT False) OR (NOT True)) AND ((NOT False) AND (True))) AND (((False) OR (NOT True)) OR ((False) OR (False))).", "a": "no"}
+{"q": "Evaluate: ((NOT False) AND (True)) AND ((False) OR (True)).", "a": "yes"}
+{"q": "Evaluate: ((False) OR (NOT False)) OR (NOT (True) OR (False)).", "a": "yes"}
+{"q": "Evaluate: NOT (((True) AND (NOT False)) AND ((False) OR (True))) OR (((False) AND (NOT True)) OR ((False) AND (NOT False))).", "a": "no"}
+{"q": "Evaluate: (False) OR (True).", "a": "yes"}
+{"q": "Evaluate: ((False) AND (NOT False)) OR ((True) OR (False)).", "a": "yes"}
+{"q": "Evaluate: ((False) OR (False)) AND ((NOT False) OR (False)).", "a": "no"}
+{"q": "Evaluate: (NOT False) OR (False).", "a": "yes"}
+{"q": "Evaluate: ((True) AND (NOT False)) OR ((NOT True) OR (NOT False)).", "a": "yes"}
+{"q": "Evaluate: (((False) AND (False)) AND ((True) AND (False))) AND (NOT ((True) AND (False)) AND ((NOT True) AND (False))).", "a": "no"}
+{"q": "Evaluate: ((True) OR (NOT True)) OR (NOT (True) AND (False)).", "a": "yes"}
+{"q": "Evaluate: NOT ((False) AND (False)) OR ((NOT False) OR (False)).", "a": "yes"}
+{"q": "Evaluate: ((NOT False) OR (True)) AND (NOT (False) OR (True)).", "a": "yes"}
+{"q": "Evaluate: NOT (True) OR (NOT True).", "a": "no"}
+{"q": "Evaluate: (NOT (NOT True) OR (NOT False)) OR ((True) OR (False)).", "a": "yes"}
+{"q": "Evaluate: NOT ((False) OR (False)) OR ((True) OR (True)).", "a": "yes"}
+{"q": "Evaluate: ((NOT True) OR (True)) AND ((NOT False) OR (True)).", "a": "yes"}
+{"q": "Evaluate: ((False) AND (NOT True)) OR ((NOT False) AND (True)).", "a": "yes"}
+{"q": "Evaluate: NOT (((False) AND (True)) OR (NOT (False) OR (NOT False))) AND ((NOT (NOT False) OR (False)) AND (NOT (NOT False) OR (True))).", "a": "no"}
+{"q": "Evaluate: ((True) AND (NOT True)) AND (NOT (NOT True) AND (True)).", "a": "no"}
+{"q": "Evaluate: NOT (NOT (NOT (False) AND (True)) AND (NOT (False) AND (True))) AND (((False) OR (True)) OR ((True) AND (True))).", "a": "yes"}
+{"q": "Evaluate: (NOT (False) OR (True)) OR ((NOT True) OR (NOT True)).", "a": "yes"}
+{"q": "Evaluate: (((False) AND (NOT False)) AND ((True) OR (True))) OR ((NOT (False) OR (False)) AND ((NOT True) OR (True))).", "a": "yes"}
+{"q": "Evaluate: ((False) AND (False)) AND (NOT (NOT False) OR (NOT True)).", "a": "no"}
+{"q": "Evaluate: (((NOT False) OR (False)) OR ((True) OR (NOT False))) OR ((NOT (NOT False) OR (True)) OR ((NOT True) OR (NOT True))).", "a": "yes"}
+{"q": "Evaluate: (((True) AND (NOT True)) AND ((False) OR (False))) AND (((NOT True) OR (NOT True)) OR (NOT (NOT False) AND (False))).", "a": "no"}
+{"q": "Evaluate: (NOT (NOT False) AND (False)) OR ((True) AND (NOT False)).", "a": "yes"}
+{"q": "Evaluate: NOT (NOT (False) OR (NOT False)) AND (NOT (NOT False) OR (False)).", "a": "no"}
+{"q": "Evaluate: NOT ((NOT (False) OR (False)) OR ((NOT True) AND (True))) OR (((NOT True) AND (NOT True)) OR ((NOT True) OR (False))).", "a": "no"}
+{"q": "Evaluate: (False) AND (False).", "a": "no"}
+{"q": "Evaluate: NOT (False) OR (NOT True).", "a": "yes"}
+{"q": "Evaluate: ((True) OR (NOT False)) AND ((True) OR (NOT True)).", "a": "yes"}
+{"q": "Evaluate: ((False) AND (False)) AND (NOT (NOT False) OR (True)).", "a": "no"}
+{"q": "Evaluate: ((NOT (True) OR (False)) AND ((NOT True) OR (False))) AND (((False) AND (NOT True)) OR (NOT (False) AND (NOT False))).", "a": "no"}
+{"q": "Evaluate: ((NOT (True) AND (True)) OR ((True) AND (True))) AND (((NOT False) OR (NOT True)) OR ((NOT True) OR (False))).", "a": "yes"}
+{"q": "Evaluate: (NOT False) AND (False).", "a": "no"}
+{"q": "Evaluate: (NOT ((NOT True) AND (NOT True)) OR ((True) OR (True))) AND (((NOT False) AND (NOT True)) OR (NOT (True) AND (False))).", "a": "no"}
+{"q": "Evaluate: ((False) AND (NOT True)) OR (NOT (NOT False) AND (NOT False)).", "a": "no"}
+{"q": "Evaluate: NOT (NOT ((NOT False) AND (False)) OR (NOT (True) OR (False))) OR (((True) AND (NOT False)) OR ((NOT False) OR (False))).", "a": "yes"}
+{"q": "Evaluate: (NOT (False) OR (NOT True)) OR ((NOT True) OR (True)).", "a": "yes"}
+{"q": "Evaluate: (((NOT False) AND (NOT True)) OR ((NOT False) OR (False))) OR (((True) OR (NOT False)) OR (NOT (NOT False) OR (True))).", "a": "yes"}
+{"q": "Evaluate: ((True) OR (False)) AND ((NOT False) OR (NOT True)).", "a": "yes"}
+{"q": "Evaluate: (NOT False) OR (NOT True).", "a": "yes"}
+{"q": "Evaluate: (NOT ((True) OR (False)) AND (NOT (True) OR (NOT False))) AND (NOT (NOT (True) AND (False)) OR ((False) OR (True))).", "a": "no"}
+{"q": "Evaluate: ((True) OR (False)) AND ((True) AND (False)).", "a": "no"}
+{"q": "Evaluate: (NOT ((NOT True) AND (True)) AND ((NOT True) AND (False))) AND (NOT ((False) OR (False)) OR ((NOT True) OR (False))).", "a": "no"}

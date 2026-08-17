@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Joint Prompt Optimization with Metaheuristics</title>
+  <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: #121a2b;
+      --line: #243049;
+      --text: #e8eef8;
+      --muted: #9aa8c0;
+      --accent: #7aa2ff;
+      --good: #3dd68c;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      background: var(--bg); color: var(--text); line-height: 1.5;
+    }
+    a { color: var(--accent); }
+    header, main, footer { max-width: 1080px; margin: 0 auto; padding: 0 1.25rem; }
+    header { padding-top: 2.5rem; }
+    h1 { font-size: 2rem; margin: 0 0 0.5rem; letter-spacing: -0.03em; }
+    h2 { margin-top: 2.5rem; font-size: 1.35rem; }
+    .muted { color: var(--muted); }
+    .hero { display: grid; gap: 1rem; }
+    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; margin: 1.5rem 0 0.5rem; }
+    .metric, .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 1rem 1.1rem; }
+    .metric b { display: block; font-size: 1.35rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.9rem; }
+    table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 12px; overflow: hidden; }
+    th, td { padding: 0.65rem 0.8rem; text-align: left; border-bottom: 1px solid var(--line); font-size: 0.95rem; }
+    th { color: var(--muted); font-weight: 600; }
+    tr.best td { color: var(--good); font-weight: 600; }
+    pre { white-space: pre-wrap; background: #0a101b; padding: 0.8rem; border-radius: 8px; font-size: 0.85rem; }
+    .callout { border-left: 3px solid var(--accent); padding: 0.2rem 0 0.2rem 1rem; }
+    nav { display: flex; gap: 1rem; margin: 1rem 0 0; font-size: 0.95rem; }
+    footer { padding: 3rem 1.25rem; color: var(--muted); }
+    @media (max-width: 800px) { .metrics { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="muted">Prompt optimization · combinatorial search · budgeted evaluation</p>
+    <h1>Joint instruction and few-shot search with metaheuristics</h1>
+    <p class="hero muted">
+      A prompt is a binary genome: which instruction blocks to keep, and which demonstrations to include.
+      Simulated Annealing, Differential Evolution, Grey Wolf Optimizer, and a DE→SA hybrid compete under a
+      shared call budget against greedy, random, and static baselines.
+    </p>
+    <nav>
+      <a href="#benchmark">Benchmark</a>
+      <a href="#pilot">Llama 3.2 pilot</a>
+      <a href="#prompts">Prompts</a>
+      <a href="#reproduce">Reproduce</a>
+    </nav>
+    <div class="metrics">
+      <div class="metric"><span class="muted">Holdout size</span><b>50 / task</b></div>
+      <div class="metric"><span class="muted">Seeds</span><b>5</b></div>
+      <div class="metric"><span class="muted">Call budget</span><b>220</b></div>
+      <div class="metric"><span class="muted">Backends</span><b>Mock + Ollama</b></div>
+    </div>
+  </header>
+  <main>
+    <section id="benchmark">
+      <h2>Reproducible benchmark (MockLLM)</h2>
+      <p class="muted">
+        100 items per task, 50/50 split, 16-example demo pool, 5 seeds, 220-call budget.
+        The mock model’s accuracy depends on which instructions and demos are selected, so the search is real.
+        Anyone can rerun this in under a minute with no GPU.
+        On both tasks, DE, GWO, and Hybrid DE-SA beat BASELINE_ALL by Wilcoxon signed-rank
+        (<em>p</em> = 0.031, n = 5). Greedy search does not.
+      </p>
+      <h3>Boolean expressions</h3>
+      <table><thead><tr><th>Method</th><th>Test</th><th>Std</th><th>Train</th><th>Calls</th><th>Seeds</th></tr></thead><tbody><tr class=''><td>BASELINE_NONE</td><td>56.0%</td><td>±0.0%</td><td>52.0%</td><td>100</td><td>5</td></tr><tr class=''><td>BASELINE_ALL</td><td>84.0%</td><td>±0.0%</td><td>90.0%</td><td>100</td><td>5</td></tr><tr class=''><td>RANDOM</td><td>90.8%</td><td>±7.3%</td><td>92.8%</td><td>204</td><td>5</td></tr><tr class=''><td>GREEDY</td><td>81.6%</td><td>±12.0%</td><td>84.8%</td><td>204</td><td>5</td></tr><tr class=''><td>HILL_CLIMB</td><td>88.0%</td><td>±8.9%</td><td>86.4%</td><td>196</td><td>5</td></tr><tr class=''><td>SA+</td><td>82.4%</td><td>±12.3%</td><td>90.4%</td><td>196</td><td>5</td></tr><tr class='best'><td>DE</td><td>97.2%</td><td>±1.6%</td><td>97.2%</td><td>204</td><td>5</td></tr><tr class='best'><td>GWO</td><td>97.2%</td><td>±1.6%</td><td>97.2%</td><td>204</td><td>5</td></tr><tr class='best'><td>HYBRID_DE_SA</td><td>97.2%</td><td>±1.6%</td><td>97.2%</td><td>204</td><td>5</td></tr></tbody></table>
+      <div id="chart-logic" style="height:360px;margin-top:1rem;"></div>
+      <p><img alt="Boolean convergence" src="figures/convergence_logic_mock.png" style="width:100%;border-radius:12px;border:1px solid var(--line);" /></p>
+      <h3>Arithmetic</h3>
+      <table><thead><tr><th>Method</th><th>Test</th><th>Std</th><th>Train</th><th>Calls</th><th>Seeds</th></tr></thead><tbody><tr class=''><td>BASELINE_NONE</td><td>28.0%</td><td>±0.0%</td><td>32.0%</td><td>100</td><td>5</td></tr><tr class=''><td>BASELINE_ALL</td><td>68.0%</td><td>±0.0%</td><td>62.0%</td><td>100</td><td>5</td></tr><tr class=''><td>RANDOM</td><td>80.0%</td><td>±3.8%</td><td>83.2%</td><td>204</td><td>5</td></tr><tr class=''><td>GREEDY</td><td>49.6%</td><td>±4.5%</td><td>56.0%</td><td>204</td><td>5</td></tr><tr class=''><td>HILL_CLIMB</td><td>77.6%</td><td>±10.5%</td><td>80.4%</td><td>204</td><td>5</td></tr><tr class=''><td>SA+</td><td>74.8%</td><td>±6.6%</td><td>81.6%</td><td>204</td><td>5</td></tr><tr class='best'><td>DE</td><td>82.8%</td><td>±5.3%</td><td>81.2%</td><td>204</td><td>5</td></tr><tr class='best'><td>GWO</td><td>82.8%</td><td>±5.3%</td><td>81.2%</td><td>204</td><td>5</td></tr><tr class='best'><td>HYBRID_DE_SA</td><td>82.8%</td><td>±5.3%</td><td>81.2%</td><td>204</td><td>5</td></tr></tbody></table>
+      <div id="chart-arith" style="height:360px;margin-top:1rem;"></div>
+    </section>
+
+    <section id="pilot">
+      <h2>Local Llama 3.2 pilot</h2>
+      <div class="callout">
+        <p>
+          Real LLM numbers from Llama 3.2 via Ollama. This was a small-n study
+          (3 seeds, test set of 3 logic items). Accuracy therefore jumps in thirds.
+          It is a <strong>pilot</strong>, not a claim of statistical significance.
+        </p>
+      </div>
+      <table><thead><tr><th>Method</th><th>Test</th><th>Std</th><th>Train</th><th>Calls</th><th>Seeds</th></tr></thead><tbody><tr class=''><td>BASELINE_NONE</td><td>66.7%</td><td>±0.0%</td><td>66.7%</td><td>15</td><td>3</td></tr><tr class=''><td>BASELINE_ALL</td><td>66.7%</td><td>±0.0%</td><td>33.3%</td><td>15</td><td>3</td></tr><tr class=''><td>RANDOM</td><td>66.7%</td><td>±27.2%</td><td>88.9%</td><td>95</td><td>3</td></tr><tr class=''><td>GREEDY</td><td>77.8%</td><td>±15.7%</td><td>86.1%</td><td>89</td><td>3</td></tr><tr class='best'><td>SA+</td><td>88.9%</td><td>±15.7%</td><td>75.0%</td><td>76</td><td>3</td></tr><tr class=''><td>DE</td><td>77.8%</td><td>±15.7%</td><td>80.6%</td><td>95</td><td>3</td></tr><tr class='best'><td>GWO</td><td>88.9%</td><td>±15.7%</td><td>77.8%</td><td>95</td><td>3</td></tr><tr class=''><td>HYBRID_DE_SA</td><td>77.8%</td><td>±15.7%</td><td>77.8%</td><td>95</td><td>3</td></tr><tr class=''><td>dspy_miprov2</td><td>33.3%</td><td>±0.0%</td><td>83.3%</td><td>0</td><td>1</td></tr></tbody></table>
+      <p><img alt="Pilot accuracy" src="figures/accuracy_logic.png" style="width:100%;border-radius:12px;border:1px solid var(--line);" /></p>
+    </section>
+
+    <section id="prompts">
+      <h2>Discovered instruction prompts</h2>
+      <p class="muted">Best test configuration per method on the mock boolean split.</p>
+      <div class='grid'><article class="card">
+              <h3>DE</h3>
+              <p class="muted">test 100.0% · seed 0 · demos [0, 2, 5, 6, 7]</p>
+              <pre>Task: Evaluate the given Boolean expression with constants True/False, operators NOT/AND/OR, and parentheses.
+Operator precedence is: NOT > AND > OR (unless parentheses override).</pre>
+            </article><article class="card">
+              <h3>GWO</h3>
+              <p class="muted">test 100.0% · seed 0 · demos [0, 2, 5, 6, 7]</p>
+              <pre>Task: Evaluate the given Boolean expression with constants True/False, operators NOT/AND/OR, and parentheses.
+Operator precedence is: NOT > AND > OR (unless parentheses override).</pre>
+            </article><article class="card">
+              <h3>HYBRID_DE_SA</h3>
+              <p class="muted">test 100.0% · seed 0 · demos [0, 2, 5, 6, 7]</p>
+              <pre>Task: Evaluate the given Boolean expression with constants True/False, operators NOT/AND/OR, and parentheses.
+Operator precedence is: NOT > AND > OR (unless parentheses override).</pre>
+            </article><article class="card">
+              <h3>RANDOM</h3>
+              <p class="muted">test 98.0% · seed 0 · demos [0, 1, 2, 3, 4]</p>
+              <pre>Task: Evaluate the given Boolean expression with constants True/False, operators NOT/AND/OR, and parentheses.
+Operator precedence is: NOT > AND > OR (unless parentheses override).
+Output exactly one token: yes or no. No punctuation, no explanation.</pre>
+            </article><article class="card">
+              <h3>HILL_CLIMB</h3>
+              <p class="muted">test 98.0% · seed 0 · demos [0, 1, 2, 3, 4]</p>
+              <pre>Task: Evaluate the given Boolean expression with constants True/False, operators NOT/AND/OR, and parentheses.
+Operator precedence is: NOT > AND > OR (unless parentheses override).
+Output exactly one token: yes or no. No punctuation, no explanation.</pre>
+            </article><article class="card">
+              <h3>SA+</h3>
+              <p class="muted">test 98.0% · seed 0 · demos [0, 1, 2, 3, 4]</p>
+              <pre>Task: Evaluate the given Boolean expression with constants True/False, operators NOT/AND/OR, and parentheses.
+Operator precedence is: NOT > AND > OR (unless parentheses override).
+Output exactly one token: yes or no. No punctuation, no explanation.</pre>
+            </article></div>
+    </section>
+
+    <section id="reproduce">
+      <h2>Reproduce</h2>
+      <pre>pip install -r requirements.txt
+python -m src experiment --portfolio
+python -m src stats --path results/benchmark_mock/runs.jsonl
+python -m src site</pre>
+      <p class="muted">Live LLM: <code>ollama pull llama3.2 && python -m src experiment --balanced --backend ollama</code></p>
+      <p class="muted">Source: <a href="https://github.com/Samrwitt/prompt_engineering">github.com/Samrwitt/prompt_engineering</a></p>
+    </section>
+  </main>
+  <footer>MIT license. Reported mock scores are generated by this repository; the Llama 3.2 table is the original local pilot.</footer>
+  <script>
+    const DATA = {"logic": [{"method": "BASELINE_NONE", "mean_test": 0.56, "std_test": 0.0, "mean_train": 0.52, "mean_calls": 100.0, "n": 5}, {"method": "BASELINE_ALL", "mean_test": 0.8400000000000001, "std_test": 1.1102230246251565e-16, "mean_train": 0.9, "mean_calls": 100.0, "n": 5}, {"method": "RANDOM", "mean_test": 0.908, "std_test": 0.07332121111929342, "mean_train": 0.9280000000000002, "mean_calls": 204.0, "n": 5}, {"method": "GREEDY", "mean_test": 0.8160000000000001, "std_test": 0.12026637102698326, "mean_train": 0.8479999999999999, "mean_calls": 204.0, "n": 5}, {"method": "HILL_CLIMB", "mean_test": 0.8800000000000001, "std_test": 0.08944271909999157, "mean_train": 0.8640000000000001, "mean_calls": 196.2, "n": 5}, {"method": "SA+", "mean_test": 0.8240000000000001, "std_test": 0.12289833196589774, "mean_train": 0.9039999999999999, "mean_calls": 195.8, "n": 5}, {"method": "DE", "mean_test": 0.9719999999999999, "std_test": 0.016000000000000014, "mean_train": 0.9719999999999999, "mean_calls": 204.0, "n": 5}, {"method": "GWO", "mean_test": 0.9719999999999999, "std_test": 0.016000000000000014, "mean_train": 0.9719999999999999, "mean_calls": 204.0, "n": 5}, {"method": "HYBRID_DE_SA", "mean_test": 0.9719999999999999, "std_test": 0.016000000000000014, "mean_train": 0.9719999999999999, "mean_calls": 204.0, "n": 5}], "arithmetic": [{"method": "BASELINE_NONE", "mean_test": 0.28, "std_test": 0.0, "mean_train": 0.32, "mean_calls": 100.0, "n": 5}, {"method": "BASELINE_ALL", "mean_test": 0.68, "std_test": 0.0, "mean_train": 0.62, "mean_calls": 100.0, "n": 5}, {"method": "RANDOM", "mean_test": 0.7999999999999999, "std_test": 0.03794733192202054, "mean_train": 0.8320000000000001, "mean_calls": 204.0, "n": 5}, {"method": "GREEDY", "mean_test": 0.496, "std_test": 0.0445421149026402, "mean_train": 0.56, "mean_calls": 204.0, "n": 5}, {"method": "HILL_CLIMB", "mean_test": 0.776, "std_test": 0.10537551897855592, "mean_train": 0.8039999999999999, "mean_calls": 204.0, "n": 5}, {"method": "SA+", "mean_test": 0.748, "std_test": 0.06645299090334461, "mean_train": 0.8160000000000001, "mean_calls": 204.0, "n": 5}, {"method": "DE", "mean_test": 0.828, "std_test": 0.0530659966456864, "mean_train": 0.812, "mean_calls": 204.0, "n": 5}, {"method": "GWO", "mean_test": 0.828, "std_test": 0.0530659966456864, "mean_train": 0.812, "mean_calls": 204.0, "n": 5}, {"method": "HYBRID_DE_SA", "mean_test": 0.828, "std_test": 0.0530659966456864, "mean_train": 0.812, "mean_calls": 204.0, "n": 5}], "pilot": [{"method": "BASELINE_NONE", "mean_test": 0.6666666666666666, "std_test": 0.0, "mean_train": 0.6666666666666666, "mean_calls": 15.0, "n": 3}, {"method": "BASELINE_ALL", "mean_test": 0.6666666666666666, "std_test": 0.0, "mean_train": 0.3333333333333333, "mean_calls": 15.0, "n": 3}, {"method": "RANDOM", "mean_test": 0.6666666666666666, "std_test": 0.2721655269759087, "mean_train": 0.8888888888888888, "mean_calls": 95.0, "n": 3}, {"method": "GREEDY", "mean_test": 0.7777777777777777, "std_test": 0.15713484026367724, "mean_train": 0.8611111111111112, "mean_calls": 88.66666666666667, "n": 3}, {"method": "SA+", "mean_test": 0.8888888888888888, "std_test": 0.15713484026367724, "mean_train": 0.75, "mean_calls": 75.66666666666667, "n": 3}, {"method": "DE", "mean_test": 0.7777777777777777, "std_test": 0.15713484026367724, "mean_train": 0.8055555555555555, "mean_calls": 95.0, "n": 3}, {"method": "GWO", "mean_test": 0.8888888888888888, "std_test": 0.15713484026367724, "mean_train": 0.7777777777777778, "mean_calls": 95.0, "n": 3}, {"method": "HYBRID_DE_SA", "mean_test": 0.7777777777777777, "std_test": 0.15713484026367724, "mean_train": 0.7777777777777778, "mean_calls": 95.0, "n": 3}, {"method": "dspy_miprov2", "mean_test": 0.3333333333333333, "std_test": 0.0, "mean_train": 0.8333333333333334, "mean_calls": 0.0, "n": 1}]};
+    function bar(div, rows, title) {
+      if (!rows || !rows.length) return;
+      Plotly.newPlot(div, [{
+        type: "bar",
+        x: rows.map(r => r.method),
+        y: rows.map(r => r.mean_test),
+        error_y: { type: "data", array: rows.map(r => r.std_test), visible: true },
+        marker: { color: "#7aa2ff" }
+      }], {
+        title, paper_bgcolor: "#0b1220", plot_bgcolor: "#0b1220",
+        font: { color: "#e8eef8" },
+        yaxis: { range: [0, 1], title: "Mean test accuracy", gridcolor: "#243049" },
+        xaxis: { tickangle: -25 },
+        margin: { t: 40, r: 10, l: 50, b: 80 }
+      }, {displayModeBar: false, responsive: true});
+    }
+    bar("chart-logic", DATA.logic, "Boolean — mean test accuracy");
+    bar("chart-arith", DATA.arithmetic, "Arithmetic — mean test accuracy");
+  </script>
+</body>
+</html>

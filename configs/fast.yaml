@@ -1,15 +1,16 @@
-# Fast debug preset — one seed, tiny budget, mock-friendly.
 name: fast
-max_llm_calls: 100
-fast_k: 5
+max_llm_calls: 80
+fast_k: 6
 seeds: [0]
-max_data: 10
-sa_iters: 20
+max_data: 20
+train_ratio: 0.5
+demo_pool_size: 8
+sa_iters: 12
 pop_size: 8
-de_iters: 10
-gwo_iters: 10
-hybrid_de: 10
-hybrid_sa: 10
+de_iters: 6
+gwo_iters: 6
+hybrid_de: 4
+hybrid_sa: 8
 datasets: [logic]
 backend: mock
 skip_dspy: true

@@ -345,7 +345,8 @@ def run_experiment(cfg: RunConfig) -> Dict[str, Any]:
         data = load_jsonl(ds_path)
         if cfg.max_data:
             data = data[: cfg.max_data]
-        train_data, test_data = split_train_test(data, train_ratio=0.8, seed=42)
+        train_data, test_data = split_train_test(data, train_ratio=cfg.train_ratio, seed=42)
+        demo_candidates = train_data[: max(1, min(cfg.demo_pool_size, len(train_data)))]
         answer_type = spec["answer_type"]
         llm = create_llm(
             cfg.backend,
@@ -353,7 +354,10 @@ def run_experiment(cfg: RunConfig) -> Dict[str, Any]:
             oracle=_oracle_from_rows(train_data, test_data) if cfg.backend == "mock" else None,
         )
 
-        print(f"Blocks: {len(blocks)} | train={len(train_data)} test={len(test_data)}")
+        print(
+            f"Blocks: {len(blocks)} | train={len(train_data)} test={len(test_data)} "
+            f"demo_pool={len(demo_candidates)}"
+        )
         print(f"Budget: max_llm_calls={eval_cfg.max_llm_calls}, fast_k={eval_cfg.fast_k}")
 
         ds_scores: Dict[str, Any] = {}
@@ -412,7 +416,7 @@ def run_experiment(cfg: RunConfig) -> Dict[str, Any]:
                     method=method_name,
                     algo_fn=algo_fn,
                     blocks=blocks,
-                    demo_candidates=train_data,
+                    demo_candidates=demo_candidates,
                     answer_type=answer_type,
                     llm=llm,
                     train_data=train_data,
@@ -466,7 +470,8 @@ def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
     )
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--fast", action="store_true", help="Tiny debug run (default if no mode is set).")
-    mode.add_argument("--balanced", action="store_true", help="3 seeds, two datasets.")
+    mode.add_argument("--portfolio", action="store_true", help="Reproducible mock benchmark: 5 seeds, n_test=50.")
+    mode.add_argument("--balanced", action="store_true", help="3 seeds, two datasets (Ollama).")
     mode.add_argument("--research", action="store_true", help="Full paper-scale run.")
     parser.add_argument("--config", type=str, default=None, help="YAML config path (overrides preset).")
     parser.add_argument("--backend", choices=["mock", "ollama"], default=None)
@@ -483,6 +488,8 @@ def config_from_args(args: argparse.Namespace) -> RunConfig:
         preset = "research"
     elif args.balanced:
         preset = "balanced"
+    elif args.portfolio:
+        preset = "portfolio"
     else:
         preset = "fast"
     overrides: Dict[str, Any] = {}
@@ -496,11 +503,13 @@ def config_from_args(args: argparse.Namespace) -> RunConfig:
         overrides["datasets"] = [s.strip() for s in args.datasets.split(",") if s.strip()]
     if args.dspy:
         overrides["skip_dspy"] = False
-    elif args.backend == "mock" or (args.backend is None and preset == "fast"):
+    elif args.backend == "mock" or (args.backend is None and preset in ("fast", "portfolio")):
         overrides["skip_dspy"] = True
     if args.results_dir:
         overrides["results_dir"] = args.results_dir
-    if preset == "fast" and "backend" not in overrides:
+    elif preset == "portfolio" and "results_dir" not in overrides:
+        overrides["results_dir"] = "results/benchmark_mock"
+    if preset in ("fast", "portfolio") and "backend" not in overrides:
         overrides["backend"] = "mock"
     return load_run_config(preset=preset, config_path=args.config, overrides=overrides)
 
