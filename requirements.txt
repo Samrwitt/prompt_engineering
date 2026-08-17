@@ -6,3 +6,8 @@ tqdm
 scipy
 pandas
 dspy-ai
+requests
+matplotlib
+pyyaml
+streamlit>=1.32
+pytest>=7.0

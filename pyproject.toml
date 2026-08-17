@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "prompt-metaheuristics"
+version = "1.0.0"
+description = "Joint instruction and few-shot prompt optimization with nature-inspired metaheuristics."
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [{name = "Prompt Optimization Team"}]
+dependencies = [
+  "transformers>=4.41.0",
+  "torch",
+  "accelerate",
+  "numpy",
+  "tqdm",
+  "scipy",
+  "pandas",
+  "dspy-ai",
+  "requests",
+  "matplotlib",
+  "pyyaml",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+dashboard = ["streamlit>=1.32"]
+
+[project.scripts]
+promptopt = "src.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-q"

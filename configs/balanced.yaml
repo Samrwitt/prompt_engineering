@@ -1,0 +1,17 @@
+# Recommended local run: 3 seeds, two datasets.
+name: balanced
+max_llm_calls: 300
+fast_k: 10
+seeds: [0, 1, 2]
+max_data: 20
+sa_iters: 30
+pop_size: 12
+de_iters: 15
+gwo_iters: 15
+hybrid_de: 10
+hybrid_sa: 20
+datasets: [logic, arithmetic]
+backend: ollama
+skip_dspy: false
+max_demos: 5
+early_stop: true
